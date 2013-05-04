@@ -1,0 +1,34 @@
+                               CSE 223B - LAB 3
+                         =============================
+                         Danilo G Rodrigues  U06203956
+
+
+I) External libraries used:
+===============================================================================
+
+*** Google cpp-btree: https://code.google.com/p/cpp-btree/
+Description:
+The map data structure used by my KeyValueStore_server implementation uses a
+Btree instead of Red Black tree. The Btree implementation uses less memory
+and for big data access showed to be faster than Red Black tree (as it
+improves the using of cache)
+
+Files used:
+btree.h
+btree_container.h
+btree_map.h
+btree_set.h
+
+
+Files location:
+src\
+(they should work if inserted in include\)
+
+
+Compilation issues:
+It was required to insert these lines in the makefile:
+KeyValueStore_server.o: KeyValueStore_server.cpp
+→       $(CXX) -Wall -std=c++0x -DHAVE_INTTYPES_H -DHAVE_NETINET_IN_H $(INC) -c $< -o $@
+
+As this library requires to be compiled with flag c++0x
+(former specification name used for c++11)
