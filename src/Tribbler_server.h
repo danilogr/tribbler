@@ -42,6 +42,8 @@ class TribblerHandler : virtual public Tribbler::TribblerIf {
 
   kvs::KVStoreStatus::type Put(std::string key, std::string value);
 
+  kvs::KVStoreStatus::type Eval(std::string arg1, std::string arg2, std::string arg3);
+
   kvs::GetResponse Get(std::string key);
 
   kvs::GetListResponse GetList(std::string key);

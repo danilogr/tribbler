@@ -79,18 +79,6 @@ Tribbler::TribbleStatus::type TribblerHandler::AddSubscription(const std::string
 
         case (int)kvs::KVStoreStatus::OK:
           {
-            //case it was ok we should update the inverse pointer list
-            //(this can be really useffull in real world cases (e.g. twitter)
-            //when user wants a list of which users follow her
-            //in other hand we pay by doubling our storage
-            //bool stored =false;
-            //while(!stored)
-            //{
-            //  if(kvs::KVStoreStatus::EPUTFAILED != AddToList(subscribeto+"_i",userid))
-            //    stored = true;
-
-            //}
-
             response = Tribbler::TribbleStatus::OK;
           }
           break;
@@ -135,14 +123,6 @@ Tribbler::TribbleStatus::type TribblerHandler::RemoveSubscription(const std::str
         case (int)kvs::KVStoreStatus::OK:
           response = Tribbler::TribbleStatus::OK;
 
-          //case it was ok we should update the inverse pointer list
-          //(this can be really useffull in real world cases (e.g. twitter)
-          //when user wants a list of which users follow her
-          //in other hand we pay by doubling our storage
-          //kvs::KVStoreStatus::type nrsp = RemoveFromList(subscribeto+"_i",userid);
-          //if it is not found its ok
-          //but maybe we should log warnings about that
-
           break;
       }
     }
@@ -163,81 +143,30 @@ Tribbler::TribbleStatus::type TribblerHandler::PostTribble(const std::string& us
   if(post.size() == 0)
     return Tribbler::TribbleStatus::STORE_FAILED;
 
-  //OK by default
+
   Tribbler::TribbleStatus::type response = Tribbler::TribbleStatus::OK;
+
 
   //check user exists
   if(keyExists(_userid))
   {
-    //retrieve subscribing list
-    kvs::GetListResponse rsp = GetList(userid+"_p");
 
-    //if no item was found that means that user never tribbled
-    //if a item was found then just copy
-    bool itemToRemoveFlag = false;
-    std::string itemToRemove;
-    if (rsp.status == kvs::KVStoreStatus::OK)
-    {
-      if(rsp.values.size() > 99)
-      {
-        //convert to int
-        std::vector<int64_t> list;
-        vstringToVint64(rsp.values,list);
-
-        //sort vector
-        std::sort(list.begin(),list.end(), std::greater<int64_t>());
-
-
-        int s = rsp.values.size();
-        //if for some error reason this is bigger than 100
-        while (s > 100)
-        {
-          //remove until we have exactly 100
-          RemoveFromList(userid+"_p",boost::lexical_cast<std::string>(list.back()));
-          list.pop_back();
-          s--;
-        }
-
-        //mark that we should remove
-        itemToRemove = boost::lexical_cast<std::string>(list.back());
-        itemToRemoveFlag = true;
-
-
-        //this could be saved somewhere else
-        //e.g. key userid+"_op" where ol stands for old posts
-      }
-    } //else { //only EKEYNOTFOUND fits
-    //posts lists not found (dont need to worry about adding one more)
-    //}
-
-    //insert the new tribble
+     //insert the new tribble
     Tribbler::Tribble tmp;
     tmp.userid = userid;
-
     tmp.contents = post;
-
 
     //marshaling
     std::string encodedpost = encode(tmp);
 
-    //try to create post
-    //SYNC BEGIN
-    std::string tmptime = getTimestamp();
-    kvs::KVStoreStatus::type ans = Put(tmptime,encodedpost);
+    //evaluate script
+    kvs::KVStoreStatus::type ans =  Eval("GLOBAL_TIME", encodedpost, userid+"_p");
 
-    //ok inserting
-    if(kvs::KVStoreStatus::OK == ans)
+    //error evaluating 
+    if(kvs::KVStoreStatus::OK != ans)
     {
-      //update user list
-      AddToList(userid+"_p",tmptime);
-
-      //remove oldest element 
-      if(itemToRemoveFlag)
-        RemoveFromList(userid+"_p",itemToRemove);
-    } else {
       response=Tribbler::TribbleStatus::STORE_FAILED;
     }
-    //SYNC END
 
   } else {
     response= Tribbler::TribbleStatus::INVALID_USER;
@@ -264,7 +193,7 @@ void TribblerHandler::GetTribbles(Tribbler::TribbleResponse& _return, const std:
       vstringToVint64(rsp.values,list);
 
       //sort vector
-      std::sort(list.begin(),list.end(), std::greater<int64_t>());
+      //std::sort(list.begin(),list.end(), std::greater<int64_t>());
 
       //read all tribbles and fill list
       readAndFill(list,_return.tribbles);
@@ -440,7 +369,7 @@ void TribblerHandler::readAndFill(const std::vector<int64_t> &input,
   {
     //create storage
     Tribbler::Tribble store;
-    //store.posted = *beg;
+    store.posted = *beg;
 
     //make rpc call
     kvs::GetResponse tribble = Get(boost::lexical_cast<std::string>(*beg));
@@ -596,6 +525,21 @@ kvs::KVStoreStatus::type TribblerHandler::RemoveFromList(std::string key, std::s
   transport->close();
   return st;
 }
+
+kvs::KVStoreStatus::type TribblerHandler::Eval(std::string arg1, std::string arg2, std::string arg3)
+{
+  // Making the RPC Call to the Storage server
+  boost::shared_ptr<att::TSocket> socket(new att::TSocket(_storageServer, _storageServerPort));
+  boost::shared_ptr<att::TTransport> transport(new att::TBufferedTransport(socket));
+  boost::shared_ptr<atp::TProtocol> protocol(new atp::TBinaryProtocol(transport));
+  kvs::KeyValueStoreClient client(protocol);
+  kvs::KVStoreStatus::type st;
+  transport->open();
+  st = client.Eval(arg1, arg2,arg3,"tribbleserver");
+  transport->close();
+  return st;
+}
+
 
 kvs::KVStoreStatus::type TribblerHandler::Put(std::string key, std::string value)
 {

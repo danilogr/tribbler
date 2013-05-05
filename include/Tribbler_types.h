@@ -40,16 +40,16 @@ typedef struct _Tribble__isset {
 class Tribble {
  public:
 
-  static const char* ascii_fingerprint; // = "65EFF36B45A2A15ED500CE77FF0EDE94";
-  static const uint8_t binary_fingerprint[16]; // = {0x65,0xEF,0xF3,0x6B,0x45,0xA2,0xA1,0x5E,0xD5,0x00,0xCE,0x77,0xFF,0x0E,0xDE,0x94};
+  static const char* ascii_fingerprint; // = "FA35BEC6F4D26D79A7E0AD1366489BCC";
+  static const uint8_t binary_fingerprint[16]; // = {0xFA,0x35,0xBE,0xC6,0xF4,0xD2,0x6D,0x79,0xA7,0xE0,0xAD,0x13,0x66,0x48,0x9B,0xCC};
 
-  Tribble() : userid(), contents() {
+  Tribble() : userid(), posted(0), contents() {
   }
 
   virtual ~Tribble() throw() {}
 
   std::string userid;
-  std::vector<int64_t>  posted;
+  int64_t posted;
   std::string contents;
 
   _Tribble__isset __isset;
@@ -58,7 +58,7 @@ class Tribble {
     userid = val;
   }
 
-  void __set_posted(const std::vector<int64_t> & val) {
+  void __set_posted(const int64_t val) {
     posted = val;
   }
 
@@ -98,8 +98,8 @@ typedef struct _TribbleResponse__isset {
 class TribbleResponse {
  public:
 
-  static const char* ascii_fingerprint; // = "EE7AB766979BE7A96DC3788F2ABC0A1B";
-  static const uint8_t binary_fingerprint[16]; // = {0xEE,0x7A,0xB7,0x66,0x97,0x9B,0xE7,0xA9,0x6D,0xC3,0x78,0x8F,0x2A,0xBC,0x0A,0x1B};
+  static const char* ascii_fingerprint; // = "43BFF501D78BB9C8F03213B50B38B34D";
+  static const uint8_t binary_fingerprint[16]; // = {0x43,0xBF,0xF5,0x01,0xD7,0x8B,0xB9,0xC8,0xF0,0x32,0x13,0xB5,0x0B,0x38,0xB3,0x4D};
 
   TribbleResponse() : status((TribbleStatus::type)0) {
   }

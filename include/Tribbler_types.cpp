@@ -30,8 +30,8 @@ const char* _kTribbleStatusNames[] = {
 };
 const std::map<int, const char*> _TribbleStatus_VALUES_TO_NAMES(::apache::thrift::TEnumIterator(7, _kTribbleStatusValues, _kTribbleStatusNames), ::apache::thrift::TEnumIterator(-1, NULL, NULL));
 
-const char* Tribble::ascii_fingerprint = "65EFF36B45A2A15ED500CE77FF0EDE94";
-const uint8_t Tribble::binary_fingerprint[16] = {0x65,0xEF,0xF3,0x6B,0x45,0xA2,0xA1,0x5E,0xD5,0x00,0xCE,0x77,0xFF,0x0E,0xDE,0x94};
+const char* Tribble::ascii_fingerprint = "FA35BEC6F4D26D79A7E0AD1366489BCC";
+const uint8_t Tribble::binary_fingerprint[16] = {0xFA,0x35,0xBE,0xC6,0xF4,0xD2,0x6D,0x79,0xA7,0xE0,0xAD,0x13,0x66,0x48,0x9B,0xCC};
 
 uint32_t Tribble::read(::apache::thrift::protocol::TProtocol* iprot) {
 
@@ -62,20 +62,8 @@ uint32_t Tribble::read(::apache::thrift::protocol::TProtocol* iprot) {
         }
         break;
       case 2:
-        if (ftype == ::apache::thrift::protocol::T_LIST) {
-          {
-            this->posted.clear();
-            uint32_t _size0;
-            ::apache::thrift::protocol::TType _etype3;
-            xfer += iprot->readListBegin(_etype3, _size0);
-            this->posted.resize(_size0);
-            uint32_t _i4;
-            for (_i4 = 0; _i4 < _size0; ++_i4)
-            {
-              xfer += iprot->readI64(this->posted[_i4]);
-            }
-            xfer += iprot->readListEnd();
-          }
+        if (ftype == ::apache::thrift::protocol::T_I64) {
+          xfer += iprot->readI64(this->posted);
           this->__isset.posted = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -109,16 +97,8 @@ uint32_t Tribble::write(::apache::thrift::protocol::TProtocol* oprot) const {
   xfer += oprot->writeString(this->userid);
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("posted", ::apache::thrift::protocol::T_LIST, 2);
-  {
-    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I64, static_cast<uint32_t>(this->posted.size()));
-    std::vector<int64_t> ::const_iterator _iter5;
-    for (_iter5 = this->posted.begin(); _iter5 != this->posted.end(); ++_iter5)
-    {
-      xfer += oprot->writeI64((*_iter5));
-    }
-    xfer += oprot->writeListEnd();
-  }
+  xfer += oprot->writeFieldBegin("posted", ::apache::thrift::protocol::T_I64, 2);
+  xfer += oprot->writeI64(this->posted);
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldBegin("contents", ::apache::thrift::protocol::T_STRING, 3);
@@ -138,8 +118,8 @@ void swap(Tribble &a, Tribble &b) {
   swap(a.__isset, b.__isset);
 }
 
-const char* TribbleResponse::ascii_fingerprint = "EE7AB766979BE7A96DC3788F2ABC0A1B";
-const uint8_t TribbleResponse::binary_fingerprint[16] = {0xEE,0x7A,0xB7,0x66,0x97,0x9B,0xE7,0xA9,0x6D,0xC3,0x78,0x8F,0x2A,0xBC,0x0A,0x1B};
+const char* TribbleResponse::ascii_fingerprint = "43BFF501D78BB9C8F03213B50B38B34D";
+const uint8_t TribbleResponse::binary_fingerprint[16] = {0x43,0xBF,0xF5,0x01,0xD7,0x8B,0xB9,0xC8,0xF0,0x32,0x13,0xB5,0x0B,0x38,0xB3,0x4D};
 
 uint32_t TribbleResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
 
@@ -165,14 +145,14 @@ uint32_t TribbleResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->tribbles.clear();
-            uint32_t _size6;
-            ::apache::thrift::protocol::TType _etype9;
-            xfer += iprot->readListBegin(_etype9, _size6);
-            this->tribbles.resize(_size6);
-            uint32_t _i10;
-            for (_i10 = 0; _i10 < _size6; ++_i10)
+            uint32_t _size0;
+            ::apache::thrift::protocol::TType _etype3;
+            xfer += iprot->readListBegin(_etype3, _size0);
+            this->tribbles.resize(_size0);
+            uint32_t _i4;
+            for (_i4 = 0; _i4 < _size0; ++_i4)
             {
-              xfer += this->tribbles[_i10].read(iprot);
+              xfer += this->tribbles[_i4].read(iprot);
             }
             xfer += iprot->readListEnd();
           }
@@ -183,9 +163,9 @@ uint32_t TribbleResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
         break;
       case 2:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast11;
-          xfer += iprot->readI32(ecast11);
-          this->status = (TribbleStatus::type)ecast11;
+          int32_t ecast5;
+          xfer += iprot->readI32(ecast5);
+          this->status = (TribbleStatus::type)ecast5;
           this->__isset.status = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -210,10 +190,10 @@ uint32_t TribbleResponse::write(::apache::thrift::protocol::TProtocol* oprot) co
   xfer += oprot->writeFieldBegin("tribbles", ::apache::thrift::protocol::T_LIST, 1);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->tribbles.size()));
-    std::vector<Tribble> ::const_iterator _iter12;
-    for (_iter12 = this->tribbles.begin(); _iter12 != this->tribbles.end(); ++_iter12)
+    std::vector<Tribble> ::const_iterator _iter6;
+    for (_iter6 = this->tribbles.begin(); _iter6 != this->tribbles.end(); ++_iter6)
     {
-      xfer += (*_iter12).write(oprot);
+      xfer += (*_iter6).write(oprot);
     }
     xfer += oprot->writeListEnd();
   }
@@ -262,14 +242,14 @@ uint32_t SubscriptionResponse::read(::apache::thrift::protocol::TProtocol* iprot
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->subscriptions.clear();
-            uint32_t _size13;
-            ::apache::thrift::protocol::TType _etype16;
-            xfer += iprot->readListBegin(_etype16, _size13);
-            this->subscriptions.resize(_size13);
-            uint32_t _i17;
-            for (_i17 = 0; _i17 < _size13; ++_i17)
+            uint32_t _size7;
+            ::apache::thrift::protocol::TType _etype10;
+            xfer += iprot->readListBegin(_etype10, _size7);
+            this->subscriptions.resize(_size7);
+            uint32_t _i11;
+            for (_i11 = 0; _i11 < _size7; ++_i11)
             {
-              xfer += iprot->readString(this->subscriptions[_i17]);
+              xfer += iprot->readString(this->subscriptions[_i11]);
             }
             xfer += iprot->readListEnd();
           }
@@ -280,9 +260,9 @@ uint32_t SubscriptionResponse::read(::apache::thrift::protocol::TProtocol* iprot
         break;
       case 2:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast18;
-          xfer += iprot->readI32(ecast18);
-          this->status = (TribbleStatus::type)ecast18;
+          int32_t ecast12;
+          xfer += iprot->readI32(ecast12);
+          this->status = (TribbleStatus::type)ecast12;
           this->__isset.status = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -307,10 +287,10 @@ uint32_t SubscriptionResponse::write(::apache::thrift::protocol::TProtocol* opro
   xfer += oprot->writeFieldBegin("subscriptions", ::apache::thrift::protocol::T_LIST, 1);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->subscriptions.size()));
-    std::vector<std::string> ::const_iterator _iter19;
-    for (_iter19 = this->subscriptions.begin(); _iter19 != this->subscriptions.end(); ++_iter19)
+    std::vector<std::string> ::const_iterator _iter13;
+    for (_iter13 = this->subscriptions.begin(); _iter13 != this->subscriptions.end(); ++_iter13)
     {
-      xfer += oprot->writeString((*_iter19));
+      xfer += oprot->writeString((*_iter13));
     }
     xfer += oprot->writeListEnd();
   }

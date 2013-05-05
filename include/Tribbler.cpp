@@ -96,9 +96,9 @@ uint32_t Tribbler_CreateUser_result::read(::apache::thrift::protocol::TProtocol*
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast20;
-          xfer += iprot->readI32(ecast20);
-          this->success = (TribbleStatus::type)ecast20;
+          int32_t ecast14;
+          xfer += iprot->readI32(ecast14);
+          this->success = (TribbleStatus::type)ecast14;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -154,9 +154,9 @@ uint32_t Tribbler_CreateUser_presult::read(::apache::thrift::protocol::TProtocol
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast21;
-          xfer += iprot->readI32(ecast21);
-          (*(this->success)) = (TribbleStatus::type)ecast21;
+          int32_t ecast15;
+          xfer += iprot->readI32(ecast15);
+          (*(this->success)) = (TribbleStatus::type)ecast15;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -278,9 +278,9 @@ uint32_t Tribbler_AddSubscription_result::read(::apache::thrift::protocol::TProt
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast22;
-          xfer += iprot->readI32(ecast22);
-          this->success = (TribbleStatus::type)ecast22;
+          int32_t ecast16;
+          xfer += iprot->readI32(ecast16);
+          this->success = (TribbleStatus::type)ecast16;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -336,9 +336,9 @@ uint32_t Tribbler_AddSubscription_presult::read(::apache::thrift::protocol::TPro
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast23;
-          xfer += iprot->readI32(ecast23);
-          (*(this->success)) = (TribbleStatus::type)ecast23;
+          int32_t ecast17;
+          xfer += iprot->readI32(ecast17);
+          (*(this->success)) = (TribbleStatus::type)ecast17;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -460,9 +460,9 @@ uint32_t Tribbler_RemoveSubscription_result::read(::apache::thrift::protocol::TP
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast24;
-          xfer += iprot->readI32(ecast24);
-          this->success = (TribbleStatus::type)ecast24;
+          int32_t ecast18;
+          xfer += iprot->readI32(ecast18);
+          this->success = (TribbleStatus::type)ecast18;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -518,9 +518,9 @@ uint32_t Tribbler_RemoveSubscription_presult::read(::apache::thrift::protocol::T
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast25;
-          xfer += iprot->readI32(ecast25);
-          (*(this->success)) = (TribbleStatus::type)ecast25;
+          int32_t ecast19;
+          xfer += iprot->readI32(ecast19);
+          (*(this->success)) = (TribbleStatus::type)ecast19;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -642,9 +642,9 @@ uint32_t Tribbler_PostTribble_result::read(::apache::thrift::protocol::TProtocol
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast26;
-          xfer += iprot->readI32(ecast26);
-          this->success = (TribbleStatus::type)ecast26;
+          int32_t ecast20;
+          xfer += iprot->readI32(ecast20);
+          this->success = (TribbleStatus::type)ecast20;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -700,9 +700,9 @@ uint32_t Tribbler_PostTribble_presult::read(::apache::thrift::protocol::TProtoco
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast27;
-          xfer += iprot->readI32(ecast27);
-          (*(this->success)) = (TribbleStatus::type)ecast27;
+          int32_t ecast21;
+          xfer += iprot->readI32(ecast21);
+          (*(this->success)) = (TribbleStatus::type)ecast21;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);

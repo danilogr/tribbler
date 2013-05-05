@@ -1,6 +1,7 @@
 # RPC Interface between Tribbler client and Tribbler server.
 # Malveeka Tewari (malveeka@cs.ucsd.edu)
-
+# Edited by Danilo (danilod100@gmail.com)
+# posted is an int (and not a list)
 namespace cpp Tribbler
 
 /**
@@ -24,7 +25,7 @@ enum TribbleStatus {
 
 struct Tribble {
     1: string userid,
-    2: list<i64> posted,
+    2: i64 posted,
     3: string contents
 }
 
