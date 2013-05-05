@@ -10,7 +10,7 @@ I) External libraries used:
 Description:
 The map data structure used by my KeyValueStore_server implementation uses a
 Btree instead of Red Black tree. The Btree implementation uses less memory
-and for big data access showed to be faster than Red Black tree (as it
+and for big data access it showed to be faster than Red Black tree (as it
 improves the using of cache)
 
 Files used:
@@ -32,3 +32,23 @@ KeyValueStore_server.o: KeyValueStore_server.cpp
 
 As this library requires to be compiled with flag c++0x
 (former specification name used for c++11)
+
+
+II) Important Notes
+================================================================================
+
+a) KV Servers IDs
+-----------------
+I considered that kv server ids are assigned continuously from 0 to n-1, where n
+is the number of KV servers.
+
+b) KV Server input
+-----------------
+Each KV Server receives as parameter a list of other KV Servers. I consider that
+all KV Server receives the same number of servers (and therefore create vectors
+with the same size for their timestamps).
+
+c) Tribble Post Element
+-----------------------
+It was converted to be just a number (as Lab2). This value may not be the same
+for a post between different KV Store servers

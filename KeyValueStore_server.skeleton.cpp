@@ -47,7 +47,12 @@ class KeyValueStoreHandler : virtual public KeyValueStoreIf {
     printf("RemoveFromList\n");
   }
 
-  void KVPut(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp) {
+  KVStoreStatus::type Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list) {
+    // Your implementation goes here
+    printf("Eval\n");
+  }
+
+  void KVPut(const std::string& key, const std::string& value, const std::string& clientid) {
     // Your implementation goes here
     printf("KVPut\n");
   }
@@ -60,6 +65,11 @@ class KeyValueStoreHandler : virtual public KeyValueStoreIf {
   void KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid) {
     // Your implementation goes here
     printf("KVRemoveFromList\n");
+  }
+
+  void KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::vector<int64_t> & timestamp) {
+    // Your implementation goes here
+    printf("KVEval\n");
   }
 
 };

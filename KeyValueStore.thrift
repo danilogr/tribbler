@@ -4,8 +4,8 @@
 # (this is a specific solution, meaning that
 # for a wide synchronized solution I would add
 # a timestamp for all Put,Add and Delete functions)
-# Include timestamp as part of functions KVPut
-# Include timestamp as return from GetResponse
+# Include timestamp as part of functions: KVEval
+# Create a function for evaluating user scritps (Eval)
 
 namespace cpp KeyValueStore
 
@@ -21,7 +21,8 @@ enum KVStoreStatus {
     EPUTFAILED = 4,
     EITEMEXISTS = 5, // duplicate in lists
     INTERNAL_FAILURE = 6,
-    NOT_IMPLEMENTED = 7
+    NOT_IMPLEMENTED = 7,
+    EVALFAILED = 8 //incorrect script
 }
 
 /**
@@ -31,7 +32,6 @@ enum KVStoreStatus {
 struct GetResponse {
     1: KVStoreStatus status,
     2: string value
-    3: list<i64> timestamp
 }
 
 /**
@@ -53,8 +53,10 @@ service KeyValueStore {
     KVStoreStatus Put(1:string key, 2:string value, 3:string clientid),
     KVStoreStatus AddToList(1:string key, 2:string value, 3:string clientid),
     KVStoreStatus RemoveFromList(1:string key, 2:string value, 3:string clientid),
+    KVStoreStatus Eval(1:string counter_key, 2:string user_post, 3:string user_list),
 
-    oneway void KVPut(1:string key, 2:string value, 3:string clientid, 4:list<i64> timestamp),
+    oneway void KVPut(1:string key, 2:string value, 3:string clientid),
     oneway void KVAddToList(1:string key, 2:string value, 3:string clientid),
-    oneway void KVRemoveFromList(1:string key, 2:string value, 3:string clientid)
+    oneway void KVRemoveFromList(1:string key, 2:string value, 3:string clientid),
+    oneway void KVEval(1:string counter_key, 2:string user_post, 3:string user_list, 4:list<i64> timestamp)
 }

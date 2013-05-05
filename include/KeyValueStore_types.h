@@ -24,24 +24,24 @@ struct KVStoreStatus {
     EPUTFAILED = 4,
     EITEMEXISTS = 5,
     INTERNAL_FAILURE = 6,
-    NOT_IMPLEMENTED = 7
+    NOT_IMPLEMENTED = 7,
+    EVALFAILED = 8
   };
 };
 
 extern const std::map<int, const char*> _KVStoreStatus_VALUES_TO_NAMES;
 
 typedef struct _GetResponse__isset {
-  _GetResponse__isset() : status(false), value(false), timestamp(false) {}
+  _GetResponse__isset() : status(false), value(false) {}
   bool status;
   bool value;
-  bool timestamp;
 } _GetResponse__isset;
 
 class GetResponse {
  public:
 
-  static const char* ascii_fingerprint; // = "EC9673EEAE3E5A373D15AC0EC614F2A0";
-  static const uint8_t binary_fingerprint[16]; // = {0xEC,0x96,0x73,0xEE,0xAE,0x3E,0x5A,0x37,0x3D,0x15,0xAC,0x0E,0xC6,0x14,0xF2,0xA0};
+  static const char* ascii_fingerprint; // = "19B5240589E680301A7E32DF3971EFBE";
+  static const uint8_t binary_fingerprint[16]; // = {0x19,0xB5,0x24,0x05,0x89,0xE6,0x80,0x30,0x1A,0x7E,0x32,0xDF,0x39,0x71,0xEF,0xBE};
 
   GetResponse() : status((KVStoreStatus::type)0), value() {
   }
@@ -50,7 +50,6 @@ class GetResponse {
 
   KVStoreStatus::type status;
   std::string value;
-  std::vector<int64_t>  timestamp;
 
   _GetResponse__isset __isset;
 
@@ -62,17 +61,11 @@ class GetResponse {
     value = val;
   }
 
-  void __set_timestamp(const std::vector<int64_t> & val) {
-    timestamp = val;
-  }
-
   bool operator == (const GetResponse & rhs) const
   {
     if (!(status == rhs.status))
       return false;
     if (!(value == rhs.value))
-      return false;
-    if (!(timestamp == rhs.timestamp))
       return false;
     return true;
   }

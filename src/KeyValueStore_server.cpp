@@ -24,7 +24,7 @@ KeyValueStoreHandler::KeyValueStoreHandler(int instanceId, const ServerList &ser
 
 
     //prepare timestamp
-    _timestamp.resize(server.size());
+    _timestamp.resize(server.size()+1);
     std::fill(_timestamp.begin(),_timestamp.end(), 0);
 
     //fill vectors
@@ -97,17 +97,18 @@ kvs::KVStoreStatus::type KeyValueStoreHandler::Put(const std::string& key, const
         std::cout << "PUT" << key << " = " << value << " FROM" <<  clientid << std::endl;
 
 
-        //check if this was not a local call
-        if(clientid != _idstr)
-        {
-            RemotePut(key,value);
-        }
+      //check if this was not a local call
+      if(clientid != _idstr)
+      {
+        RemotePut(key,value);
+      }
+
 
 
     } catch (std::bad_alloc& ba)
     {
-        std::cout << "PUT" << key << " = " << value << " FROM" <<  clientid << " [FAILED]" << std::endl;
-        response = kvs::KVStoreStatus::EPUTFAILED;
+      std::cout << "PUT" << key << " = " << value << " FROM" <<  clientid << " [FAILED]" << std::endl;
+      response = kvs::KVStoreStatus::EPUTFAILED;
     }
 
 
@@ -116,112 +117,122 @@ kvs::KVStoreStatus::type KeyValueStoreHandler::Put(const std::string& key, const
 
 // ========================================================================================================
 kvs::KVStoreStatus::type KeyValueStoreHandler::AddToList(const std::string& key, const std::string& value, const std::string& clientid) {
-    kvs::KVStoreStatus::type response = kvs::KVStoreStatus::OK;
+  kvs::KVStoreStatus::type response = kvs::KVStoreStatus::OK;
 
 
-    try
+  try
+  {
+    ListHolder &listval = list_keys[key];
+    std::pair<ListHolder::iterator,bool> ret = listval.insert(value);
+
+    std::cout << "AddToList" << key << " = " << value << " FROM" <<  clientid;
+    //if data already exists
+    if(ret.second == false)
     {
-        ListHolder &listval = list_keys[key];
-        std::pair<ListHolder::iterator,bool> ret = listval.insert(value);
+      response = kvs::KVStoreStatus::EITEMEXISTS;
+      std::cout << "{EITEMEXISTS}";
+    } else { 
+      //new data add ==> propagate
+      //check if this was not a local call
+      if(clientid != _idstr)
+      {
+        RemoteAddToList(key,value);
+      }
 
-        std::cout << "AddToList" << key << " = " << value << " FROM" <<  clientid;
-        //if data already exists
-        if(ret.second == false)
-        {
-            response = kvs::KVStoreStatus::EITEMEXISTS;
-            std::cout << "{EITEMEXISTS}";
-        } else { 
-            //new data add ==> propagate
-            //check if this was not a local call
-            if(clientid != _idstr)
-            {
-                RemoteAddToList(key,value);
-            }
-
-        }
-        std::cout << std::endl;
-    } catch (std::bad_alloc& ba)
-    {
-        std::cout << "AddToList" << key << " = " << value << " FROM" <<  clientid << " [FAILED]" << std::endl;
-        response = kvs::KVStoreStatus::EPUTFAILED;
     }
+    std::cout << std::endl;
+  } catch (std::bad_alloc& ba)
+  {
+    std::cout << "AddToList" << key << " = " << value << " FROM" <<  clientid << " [FAILED]" << std::endl;
+    response = kvs::KVStoreStatus::EPUTFAILED;
+  }
 
 
-    return response; 
+  return response; 
 }
 
 // ========================================================================================================
 
 kvs::KVStoreStatus::type KeyValueStoreHandler::RemoveFromList(const std::string& key, const std::string& value, const std::string& clientid) {
-    kvs::KVStoreStatus::type response = kvs::KVStoreStatus::OK;
+  kvs::KVStoreStatus::type response = kvs::KVStoreStatus::OK;
 
-    //look for item
-    //never return a key not found as a empty will be created
-    ListMap::iterator i = list_keys.find(key);
-    if(i == list_keys.end())
+  //look for item
+  //never return a key not found as a empty will be created
+  ListMap::iterator i = list_keys.find(key);
+  if(i == list_keys.end())
+  {
+
+    std::cout << "RemoveFromList" << key << " = " << value << " FROM" <<  clientid <<"{EKEYNOTFOUND}"<< std::endl;
+
+  } else {
+    //list found
+    ListHolder &listval = (*i).second;
+
+    //search the element
+    ListHolder::iterator ret = listval.find(value);
+
+    std::cout << "RemoveFromList" << key << " = " << value << " FROM" <<  clientid;
+
+    //item not found
+    if( ret == listval.end())
     {
-
-        std::cout << "RemoveFromList" << key << " = " << value << " FROM" <<  clientid <<"{EKEYNOTFOUND}"<< std::endl;
-
+      std::cout << "{EITEMNOTFOUND}";
+      response = kvs::KVStoreStatus::EITEMNOTFOUND;
     } else {
-        //list found
-        ListHolder &listval = (*i).second;
-
-        //search the element
-        ListHolder::iterator ret = listval.find(value);
-
-        std::cout << "RemoveFromList" << key << " = " << value << " FROM" <<  clientid;
-
-        //item not found
-        if( ret == listval.end())
-        {
-            std::cout << "{EITEMNOTFOUND}";
-            response = kvs::KVStoreStatus::EITEMNOTFOUND;
-        } else {
-            //item found
-            single_keys.erase(*ret); 
+      //item found
+      single_keys.erase(*ret); 
 
 
-            //check if this was not a local call
-            if(clientid != _idstr)
-            {
-                RemoteRemoveFromList(key,value);
-            }
-
-        }
+      //check if this was not a local call
+      if(clientid != _idstr)
+      {
+        RemoteRemoveFromList(key,value);
+      }
 
     }
 
-    std::cout << std::endl;
+  }
+
+  std::cout << std::endl;
 
 
 
-    return response; 
+  return response; 
 }
+
+kvs::KVStoreStatus::type KeyValueStoreHandler::Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list)
+{
+    // Your implementation goes here
+    printf("Eval\n");
+}
+
 
 /*
  * One-way functions used for replication
  * (functions that were receieved from other server as a way to replicate data here)
  * */
+void  KeyValueStoreHandler::KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::vector<int64_t> & timestamp)
+{
+    // Your implementation goes here
+    printf("KVEval\n");
+}
 
 
-void KeyValueStoreHandler::KVPut(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp) {
 
-    //TODO deal with timestamp
-    //TODO use clientid for that
 
-    //replicate operation
-    Put(key,value,_idstr);
+void KeyValueStoreHandler::KVPut(const std::string& key, const std::string& value, const std::string& clientid) {
+
+  Put(key,value,_idstr);
 
 }
 
 void KeyValueStoreHandler::KVAddToList(const std::string& key, const std::string& value, const std::string& clientid) {
 
-    AddToList(key,value,_idstr);
+  AddToList(key,value,_idstr);
 }
 
 void KeyValueStoreHandler::KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid) {
-    RemoveFromList(key,value,_idstr);
+  RemoveFromList(key,value,_idstr);
 
 }
 
@@ -230,156 +241,197 @@ void KeyValueStoreHandler::KVRemoveFromList(const std::string& key, const std::s
  * Function call to the other servers
  * */
 
+
+
 void KeyValueStoreHandler::RemotePut(std::string key, std::string value)
 {
-    // increment local timestamp
-    _timestamp[_id]++;
-
-    // Making the RPC Call to each Storage server in a list
-    int c = _backendServerVector.size();
-    for(int i = 0; i < c; c++)
+  // Making the RPC Call to each Storage server in a list
+  int c = _backendServerVector.size();
+  for(int i = 0; i < c; i++)
+  {
+    //if server is not dead
+    if(!_backendDead[i])
     {
-        //if server is not dead
-        if(!_backendDead[i])
+
+      boost::shared_ptr<att::TSocket> socket(new att::TSocket(_backendServerVector[i].first,_backendServerVector[i].second));
+      boost::shared_ptr<att::TTransport> transport(new att::TBufferedTransport(socket));
+      boost::shared_ptr<atp::TProtocol> protocol(new atp::TBinaryProtocol(transport));
+      kvs::KeyValueStoreClient client(protocol);
+      try
+      {
+        transport->open();
+        client.KVPut(key, value, _idstr);
+        transport->close();
+        //all ok, so it was on
+        _backendOnce[i] = true;
+      } catch (at::TException &tx)
+      {
+        //error sending to this server
+
+        //was it ever on?
+        if(_backendOnce[i])
         {
-
-            boost::shared_ptr<att::TSocket> socket(new att::TSocket(_backendServerVector[i].first,_backendServerVector[i].second));
-            boost::shared_ptr<att::TTransport> transport(new att::TBufferedTransport(socket));
-            boost::shared_ptr<atp::TProtocol> protocol(new atp::TBinaryProtocol(transport));
-            kvs::KeyValueStoreClient client(protocol);
-            try
-            {
-                transport->open();
-                client.KVPut(key, value, _idstr, _timestamp);
-                transport->close();
-                //all ok, so it was on
-                _backendOnce[i] = true;
-            } catch (at::TException &tx)
-            {
-                //error sending to this server
-
-                //was it ever on?
-                if(_backendOnce[i])
-                {
-                    //therefore I consider this guy to be dead
-                    _backendDead[i] = true;
-                }
-                //if it was never on, maybe it will join us latter
-            }
+          //therefore I consider this guy to be dead
+          _backendDead[i] = true;
         }
+        //if it was never on, maybe it will join us latter
+      }
     }
+  }
 }
 
 
 
 void  KeyValueStoreHandler::RemoteAddToList(std::string key, std::string value)
 {
-    // Making the RPC Call to each Storage server in a list
-    int c = _backendServerVector.size();
-    for(int i = 0; i < c; c++)
+  // Making the RPC Call to each Storage server in a list
+  int c = _backendServerVector.size();
+  for(int i = 0; i < c; i++)
+  {
+    //if server is not dead
+    if(!_backendDead[i])
     {
-        //if server is not dead
-        if(!_backendDead[i])
+
+      boost::shared_ptr<att::TSocket> socket(new att::TSocket(_backendServerVector[i].first,_backendServerVector[i].second));
+      boost::shared_ptr<att::TTransport> transport(new att::TBufferedTransport(socket));
+      boost::shared_ptr<atp::TProtocol> protocol(new atp::TBinaryProtocol(transport));
+      kvs::KeyValueStoreClient client(protocol);
+      try
+      {
+        transport->open();
+        client.KVAddToList(key, value, _idstr);
+        transport->close();
+        //all ok, so it was on
+        _backendOnce[i] = true;
+      } catch (at::TException &tx)
+      {
+        //error sending to this server
+
+        //was it ever on?
+        if(_backendOnce[i])
         {
-
-            boost::shared_ptr<att::TSocket> socket(new att::TSocket(_backendServerVector[i].first,_backendServerVector[i].second));
-            boost::shared_ptr<att::TTransport> transport(new att::TBufferedTransport(socket));
-            boost::shared_ptr<atp::TProtocol> protocol(new atp::TBinaryProtocol(transport));
-            kvs::KeyValueStoreClient client(protocol);
-            try
-            {
-                transport->open();
-                client.KVAddToList(key, value, _idstr);
-                transport->close();
-                //all ok, so it was on
-                _backendOnce[i] = true;
-            } catch (at::TException &tx)
-            {
-                //error sending to this server
-
-                //was it ever on?
-                if(_backendOnce[i])
-                {
-                    //therefore I consider this guy to be dead
-                    _backendDead[i] = true;
-                }
-                //if it was never on, maybe it will join us latter
-            }
+          //therefore I consider this guy to be dead
+          _backendDead[i] = true;
         }
+        //if it was never on, maybe it will join us latter
+      }
     }
+  }
 
 }
 
 void  KeyValueStoreHandler::RemoteRemoveFromList(std::string key, std::string value)
 {
 
-    // Making the RPC Call to each Storage server in a list
-    int c = _backendServerVector.size();
-    for(int i = 0; i < c; c++)
+  // Making the RPC Call to each Storage server in a list
+  int c = _backendServerVector.size();
+  for(int i = 0; i < c; i++)
+  {
+    //if server is not dead
+    if(!_backendDead[i])
     {
-        //if server is not dead
-        if(!_backendDead[i])
+
+      boost::shared_ptr<att::TSocket> socket(new att::TSocket(_backendServerVector[i].first,_backendServerVector[i].second));
+      boost::shared_ptr<att::TTransport> transport(new att::TBufferedTransport(socket));
+      boost::shared_ptr<atp::TProtocol> protocol(new atp::TBinaryProtocol(transport));
+      kvs::KeyValueStoreClient client(protocol);
+      try
+      {
+        transport->open();
+        client.KVRemoveFromList(key, value, _idstr );
+        transport->close();
+        //all ok, so it was on
+        _backendOnce[i] = true;
+      } catch (at::TException &tx)
+      {
+        //error sending to this server
+
+        //was it ever on?
+        if(_backendOnce[i])
         {
-
-            boost::shared_ptr<att::TSocket> socket(new att::TSocket(_backendServerVector[i].first,_backendServerVector[i].second));
-            boost::shared_ptr<att::TTransport> transport(new att::TBufferedTransport(socket));
-            boost::shared_ptr<atp::TProtocol> protocol(new atp::TBinaryProtocol(transport));
-            kvs::KeyValueStoreClient client(protocol);
-            try
-            {
-                transport->open();
-                client.KVRemoveFromList(key, value, _idstr );
-                transport->close();
-                //all ok, so it was on
-                _backendOnce[i] = true;
-            } catch (at::TException &tx)
-            {
-                //error sending to this server
-
-                //was it ever on?
-                if(_backendOnce[i])
-                {
-                    //therefore I consider this guy to be dead
-                    _backendDead[i] = true;
-                }
-                //if it was never on, maybe it will join us latter
-            }
+          //therefore I consider this guy to be dead
+          _backendDead[i] = true;
         }
+        //if it was never on, maybe it will join us latter
+      }
     }
+  }
 
 }
 
+
+void KeyValueStoreHandler::RemoveEval(std::string arg1, std::string arg2, std::string arg3)
+{
+  // increment local timestamp
+  _timestamp[_id]++;
+
+  // Making the RPC Call to each Storage server in a list
+  int c = _backendServerVector.size();
+  for(int i = 0; i < c; i++)
+  {
+    //if server is not dead
+    if(!_backendDead[i])
+    {
+
+      boost::shared_ptr<att::TSocket> socket(new att::TSocket(_backendServerVector[i].first,_backendServerVector[i].second));
+      boost::shared_ptr<att::TTransport> transport(new att::TBufferedTransport(socket));
+      boost::shared_ptr<atp::TProtocol> protocol(new atp::TBinaryProtocol(transport));
+      kvs::KeyValueStoreClient client(protocol);
+      try
+      {
+        transport->open();
+        client.KVEval(arg1, arg2, arg3,_timestamp);
+        transport->close();
+        //all ok, so it was on
+        _backendOnce[i] = true;
+      } catch (at::TException &tx)
+      {
+        //error sending to this server
+
+        //was it ever on?
+        if(_backendOnce[i])
+        {
+          //therefore I consider this guy to be dead
+          _backendDead[i] = true;
+        }
+        //if it was never on, maybe it will join us latter
+      }
+    }
+  }
+}
+
+
 // ========================================================================================================
 int main(int argc, char **argv) {
-    if((argc < 3) || !(argc % 2)) {
-        std::cerr << "Usage: " << argv[0] << " id localport peer1 port1..." << std::endl;
-        exit(1);
-    }
+  if((argc < 3) || !(argc % 2)) {
+    std::cerr << "Usage: " << argv[0] << " id localport peer1 port1..." << std::endl;
+    exit(1);
+  }
 
-    //server port
-    int port = boost::lexical_cast<int>(argv[2]);
+  //server port
+  int port = boost::lexical_cast<int>(argv[2]);
 
-    ServerList tmp;
+  ServerList tmp;
 
-    //parse server ids
-    //(we are guaranted that argc % 2
-    for (int i = 3; i < argc; i+=2)
-    {
-        tmp.push_back(std::make_pair(argv[i], boost::lexical_cast<int>(argv[i+1])));
-        std::cout << "Server " << argv[i] << ":" << argv[i+1] << std::endl;
-    } 
+  //parse server ids
+  //(we are guaranted that argc % 2
+  for (int i = 3; i < argc; i+=2)
+  {
+    tmp.push_back(std::make_pair(argv[i], boost::lexical_cast<int>(argv[i+1])));
+    std::cout << "Server " << argv[i] << ":" << argv[i+1] << std::endl;
+  } 
 
 
-    shared_ptr<KeyValueStoreHandler> handler(new KeyValueStoreHandler(boost::lexical_cast<int>(argv[1]), tmp));
-    shared_ptr<at::TProcessor> processor(new kvs::KeyValueStoreProcessor(handler));
-    shared_ptr<ats::TServerTransport> serverTransport(new att::TServerSocket(port));
-    shared_ptr<att::TTransportFactory> transportFactory(new att::TBufferedTransportFactory());
-    shared_ptr<atp::TProtocolFactory> protocolFactory(new atp::TBinaryProtocolFactory());
+  shared_ptr<KeyValueStoreHandler> handler(new KeyValueStoreHandler(boost::lexical_cast<int>(argv[1]), tmp));
+  shared_ptr<at::TProcessor> processor(new kvs::KeyValueStoreProcessor(handler));
+  shared_ptr<ats::TServerTransport> serverTransport(new att::TServerSocket(port));
+  shared_ptr<att::TTransportFactory> transportFactory(new att::TBufferedTransportFactory());
+  shared_ptr<atp::TProtocolFactory> protocolFactory(new atp::TBinaryProtocolFactory());
 
-    std::cout << "Starting KV Server" << std::endl;
+  std::cout << "Starting KV Server" << std::endl;
 
-    ats::TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
-    server.serve();
-    return 0;
+  ats::TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
+  server.serve();
+  return 0;
 }
 
