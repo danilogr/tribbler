@@ -48,7 +48,20 @@ Each KV Server receives as parameter a list of other KV Servers. I consider that
 all KV Server receives the same number of servers (and therefore create vectors
 with the same size for their timestamps).
 
-c) Tribble Post Element
+c) Tribble Posted attribute
 -----------------------
 It was converted to be just a number (as Lab2). This value may not be the same
-for a post between different KV Store servers
+for a post between different KV Store servers as they will solve a valid 
+logical for.
+I was allowed to change this according to this line in LAB3 description:
+"The 'posted' field in the Tribble structure is now a list of integers as opposed
+to a single integer value. This is provided so that you can send vector
+imestamps to your Tribbler server, in case you need to.
+***You should feel free to further redefine it if necessary.***"
+
+III) Include Folder
+================================================================================
+The folder "include" is a copy of the include folder containing all Thrift 
+generated headers and code files. This was required as I changed the RPC speci-
+fication between KVStore servers (and the type of the Posted attribute of
+Tribbler response type).
