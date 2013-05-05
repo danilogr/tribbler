@@ -11,20 +11,15 @@ using boost::shared_ptr;
 
 //using namespace  ::KeyValueStore;
 //KeyValueStoreHandler::
-KeyValueStoreHandler::KeyValueStoreHandler(int argc, char** argv) {
-  // Your initialization goes here
-  _id = boost::lexical_cast<int>(argv[1]);
-  int index = 0;
+KeyValueStoreHandler::KeyValueStoreHandler(int instanceId, const ServerList &server) {
 
-  for(int i = 3; i+1 < argc; i += 2) {
-    if (index == _id) {
-      _backendServerVector.push_back(std::make_pair("localhost", boost::lexical_cast<int>(argv[2])));
-    }
-    std::string peer_ip(argv[i]);
-    int peer_port = atoi(argv[i+1]);
-    _backendServerVector.push_back(std::make_pair(peer_ip, peer_port));
-    std::cout << "Backend server at: " << peer_ip << " on port: " << peer_port << std::endl;
-  }
+  //server id
+  _id = instanceId;
+
+  //copy server list
+  _backendServerVector = server;
+
+
 }
 
 // single_keys btree_map<string,string>
@@ -169,24 +164,59 @@ kvs::KVStoreStatus::type KeyValueStoreHandler::RemoveFromList(const std::string&
   return response; 
 }
 
+/*
+ * One-way functions used for replication
+ * */
+
+
+void KeyValueStoreHandler::KVPut(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp) {
+    // Your implementation goes here
+    printf("KVPut\n");
+}
+
+void KeyValueStoreHandler::KVAddToList(const std::string& key, const std::string& value, const std::string& clientid) {
+    // Your implementation goes here
+    printf("KVAddToList\n");
+}
+
+void KeyValueStoreHandler::KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid) {
+    // Your implementation goes here
+    printf("KVRemoveFromList\n");
+}
+
+
 
 // ========================================================================================================
 int main(int argc, char **argv) {
-  if((argc < 3) || !(argc % 2)) {
-    std::cerr << "Usage: " << argv[0] << " id localport peer1 port1..." << std::endl;
-    exit(1);
-  }
-  int port = boost::lexical_cast<int>(argv[2]);
-  shared_ptr<KeyValueStoreHandler> handler(new KeyValueStoreHandler(argc, argv));
-  shared_ptr<at::TProcessor> processor(new kvs::KeyValueStoreProcessor(handler));
-  shared_ptr<ats::TServerTransport> serverTransport(new att::TServerSocket(port));
-  shared_ptr<att::TTransportFactory> transportFactory(new att::TBufferedTransportFactory());
-  shared_ptr<atp::TProtocolFactory> protocolFactory(new atp::TBinaryProtocolFactory());
+    if((argc < 3) || !(argc % 2)) {
+        std::cerr << "Usage: " << argv[0] << " id localport peer1 port1..." << std::endl;
+        exit(1);
+    }
 
-  std::cout << "Starting KV Server" << std::endl;
+    //server port
+    int port = boost::lexical_cast<int>(argv[2]);
 
-  ats::TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
-  server.serve();
-  return 0;
+    ServerList tmp;
+
+    //parse server ids
+    //(we are guaranted that argc % 2
+    for (int i = 3; i < argc; i+=2)
+    {
+        tmp.push_back(std::make_pair(argv[i], boost::lexical_cast<int>(argv[i+1])));
+        std::cout << "Server " << argv[i] << ":" << argv[i+1] << std::endl;
+    } 
+
+
+    shared_ptr<KeyValueStoreHandler> handler(new KeyValueStoreHandler(boost::lexical_cast<int>(argv[1]), tmp));
+    shared_ptr<at::TProcessor> processor(new kvs::KeyValueStoreProcessor(handler));
+    shared_ptr<ats::TServerTransport> serverTransport(new att::TServerSocket(port));
+    shared_ptr<att::TTransportFactory> transportFactory(new att::TBufferedTransportFactory());
+    shared_ptr<atp::TProtocolFactory> protocolFactory(new atp::TBinaryProtocolFactory());
+
+    std::cout << "Starting KV Server" << std::endl;
+
+    ats::TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
+    server.serve();
+    return 0;
 }
 

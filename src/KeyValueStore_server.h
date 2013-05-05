@@ -20,26 +20,37 @@ namespace kvs = ::KeyValueStore;
 typedef btree::btree_map<std::string,std::string> KeyMap;
 typedef btree::btree_set<std::string> ListHolder;
 typedef btree::btree_map<std::string,ListHolder> ListMap; 
+typedef std::pair<std::string, int> Server;
+typedef std::vector< Server > ServerList;
 
 class KeyValueStoreHandler : virtual public kvs::KeyValueStoreIf {
   public:
-  KeyValueStoreHandler(int argc, char** argv);
+      KeyValueStoreHandler(int instanceId, const ServerList &servers );
 
-  void Get(kvs::GetResponse& _return, const std::string& key);
+      void Get(kvs::GetResponse& _return, const std::string& key);
 
-  void GetList(kvs::GetListResponse& _return, const std::string& key);
+      void GetList(kvs::GetListResponse& _return, const std::string& key);
 
-  kvs::KVStoreStatus::type Put(const std::string& key, const std::string& value, const std::string& clientid);
+      kvs::KVStoreStatus::type Put(const std::string& key, const std::string& value, const std::string& clientid);
 
-  kvs::KVStoreStatus::type AddToList(const std::string& key, const std::string& value, const std::string& clientid);
+      kvs::KVStoreStatus::type AddToList(const std::string& key, const std::string& value, const std::string& clientid);
 
-  kvs::KVStoreStatus::type RemoveFromList(const std::string& key, const std::string& value, const std::string& clientid); 
+      kvs::KVStoreStatus::type RemoveFromList(const std::string& key, const std::string& value, const std::string& clientid); 
+
+      /* One-way functions used to implement replication  */
+
+      void KVPut(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp);
+
+      void KVAddToList(const std::string& key, const std::string& value, const std::string& clientid); 
+
+      void KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid); 
+
 
   private:
-  int _id;
-  std::vector < std::pair<std::string, int> > _backendServerVector;
-  KeyMap single_keys;
-  ListMap list_keys;
+      int _id;
+      ServerList _backendServerVector;
+      KeyMap single_keys;
+      ListMap list_keys;
 
 };
 
