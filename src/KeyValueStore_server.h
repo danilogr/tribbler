@@ -45,12 +45,20 @@ class KeyValueStoreHandler : virtual public kvs::KeyValueStoreIf {
 
       void KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid); 
 
-
   private:
       int _id;
+      std::string _idstr;
       ServerList _backendServerVector;
+      std::vector<bool> _backendDead;    //if a server is dead or not
+      std::vector<bool> _backendOnce;    //if a server was once alive
+      std::vector<int64_t> _timestamp;   //local time stamp
       KeyMap single_keys;
       ListMap list_keys;
+
+      /* Remote functions used to update other servers */
+      void RemotePut(std::string key, std::string value);
+      void RemoteAddToList(std::string key, std::string value);
+      void RemoteRemoveFromList(std::string key, std::string value);
 
 };
 
