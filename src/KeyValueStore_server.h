@@ -18,7 +18,7 @@ namespace atp = ::apache::thrift::protocol;
 namespace kvs = ::KeyValueStore;
 
 typedef btree::btree_map<std::string,std::string> KeyMap;
-typedef btree::btree_set<std::string> ListHolder;
+typedef std::list<std::string> ListHolder;
 typedef btree::btree_map<std::string,ListHolder> ListMap; 
 typedef std::pair<std::string, int> Server;
 typedef std::vector< Server > ServerList;
@@ -44,9 +44,9 @@ class KeyValueStoreHandler : virtual public kvs::KeyValueStoreIf {
 
       void KVPut(const std::string& key, const std::string& value, const std::string& clientid);
 
-      void KVAddToList(const std::string& key, const std::string& value, const std::string& clientid); 
+      void KVAddToList(const std::string& key, const std::string& value, const std::string& clientid);
 
-      void KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid); 
+      void KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid);
 
   private:
       int _id;

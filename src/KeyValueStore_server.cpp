@@ -123,16 +123,17 @@ kvs::KVStoreStatus::type KeyValueStoreHandler::AddToList(const std::string& key,
   try
   {
     ListHolder &listval = list_keys[key];
-    std::pair<ListHolder::iterator,bool> ret = listval.insert(value);
+    ListHolder::iterator it = std::find(listval.begin(),listval.end(),value);
 
     std::cout << "AddToList" << key << " = " << value << " FROM" <<  clientid;
     //if data already exists
-    if(ret.second == false)
+    if(it != listval.end())
     {
       response = kvs::KVStoreStatus::EITEMEXISTS;
       std::cout << "{EITEMEXISTS}";
     } else { 
       //new data add ==> propagate
+      listval.push_front(value);
       //check if this was not a local call
       if(clientid != _idstr)
       {
@@ -169,7 +170,7 @@ kvs::KVStoreStatus::type KeyValueStoreHandler::RemoveFromList(const std::string&
     ListHolder &listval = (*i).second;
 
     //search the element
-    ListHolder::iterator ret = listval.find(value);
+    ListHolder::iterator ret = std::find(listval.begin(),listval.end(),value);
 
     std::cout << "RemoveFromList" << key << " = " << value << " FROM" <<  clientid;
 
@@ -180,7 +181,7 @@ kvs::KVStoreStatus::type KeyValueStoreHandler::RemoveFromList(const std::string&
       response = kvs::KVStoreStatus::EITEMNOTFOUND;
     } else {
       //item found
-      single_keys.erase(*ret); 
+      listval.erase(ret); 
 
 
       //check if this was not a local call
@@ -266,7 +267,16 @@ bool KeyValueStoreHandler::evaluate(const std::string &global, const std::string
     //
     //third, add post to user list
     //
-    list_keys[list].insert(global_counter);
+    //remove smallest element if list is bigger than 100
+
+    //a) test list size
+    ListHolder &l = list_keys[list];
+    if(l.size() == 100)
+    {
+      l.pop_back();
+    }
+    //b) add new element
+    l.push_front(global_counter);
 
 
 
