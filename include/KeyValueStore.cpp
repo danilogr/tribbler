@@ -452,9 +452,9 @@ uint32_t KeyValueStore_Put_result::read(::apache::thrift::protocol::TProtocol* i
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast8;
-          xfer += iprot->readI32(ecast8);
-          this->success = (KVStoreStatus::type)ecast8;
+          int32_t ecast20;
+          xfer += iprot->readI32(ecast20);
+          this->success = (KVStoreStatus::type)ecast20;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -510,9 +510,9 @@ uint32_t KeyValueStore_Put_presult::read(::apache::thrift::protocol::TProtocol* 
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast9;
-          xfer += iprot->readI32(ecast9);
-          (*(this->success)) = (KVStoreStatus::type)ecast9;
+          int32_t ecast21;
+          xfer += iprot->readI32(ecast21);
+          (*(this->success)) = (KVStoreStatus::type)ecast21;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -650,9 +650,9 @@ uint32_t KeyValueStore_AddToList_result::read(::apache::thrift::protocol::TProto
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast10;
-          xfer += iprot->readI32(ecast10);
-          this->success = (KVStoreStatus::type)ecast10;
+          int32_t ecast22;
+          xfer += iprot->readI32(ecast22);
+          this->success = (KVStoreStatus::type)ecast22;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -708,9 +708,9 @@ uint32_t KeyValueStore_AddToList_presult::read(::apache::thrift::protocol::TProt
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast11;
-          xfer += iprot->readI32(ecast11);
-          (*(this->success)) = (KVStoreStatus::type)ecast11;
+          int32_t ecast23;
+          xfer += iprot->readI32(ecast23);
+          (*(this->success)) = (KVStoreStatus::type)ecast23;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -848,9 +848,9 @@ uint32_t KeyValueStore_RemoveFromList_result::read(::apache::thrift::protocol::T
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast12;
-          xfer += iprot->readI32(ecast12);
-          this->success = (KVStoreStatus::type)ecast12;
+          int32_t ecast24;
+          xfer += iprot->readI32(ecast24);
+          this->success = (KVStoreStatus::type)ecast24;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -906,9 +906,9 @@ uint32_t KeyValueStore_RemoveFromList_presult::read(::apache::thrift::protocol::
     {
       case 0:
         if (ftype == ::apache::thrift::protocol::T_I32) {
-          int32_t ecast13;
-          xfer += iprot->readI32(ecast13);
-          (*(this->success)) = (KVStoreStatus::type)ecast13;
+          int32_t ecast25;
+          xfer += iprot->readI32(ecast25);
+          (*(this->success)) = (KVStoreStatus::type)ecast25;
           this->__isset.success = true;
         } else {
           xfer += iprot->skip(ftype);
@@ -923,6 +923,432 @@ uint32_t KeyValueStore_RemoveFromList_presult::read(::apache::thrift::protocol::
 
   xfer += iprot->readStructEnd();
 
+  return xfer;
+}
+
+uint32_t KeyValueStore_KVPut_args::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->key);
+          this->__isset.key = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->value);
+          this->__isset.value = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->clientid);
+          this->__isset.clientid = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 4:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->timestamp.clear();
+            uint32_t _size26;
+            ::apache::thrift::protocol::TType _etype29;
+            xfer += iprot->readListBegin(_etype29, _size26);
+            this->timestamp.resize(_size26);
+            uint32_t _i30;
+            for (_i30 = 0; _i30 < _size26; ++_i30)
+            {
+              xfer += iprot->readI64(this->timestamp[_i30]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.timestamp = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t KeyValueStore_KVPut_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  xfer += oprot->writeStructBegin("KeyValueStore_KVPut_args");
+
+  xfer += oprot->writeFieldBegin("key", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->key);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("value", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->value);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("clientid", ::apache::thrift::protocol::T_STRING, 3);
+  xfer += oprot->writeString(this->clientid);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("timestamp", ::apache::thrift::protocol::T_LIST, 4);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I64, static_cast<uint32_t>(this->timestamp.size()));
+    std::vector<int64_t> ::const_iterator _iter31;
+    for (_iter31 = this->timestamp.begin(); _iter31 != this->timestamp.end(); ++_iter31)
+    {
+      xfer += oprot->writeI64((*_iter31));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+uint32_t KeyValueStore_KVPut_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  xfer += oprot->writeStructBegin("KeyValueStore_KVPut_pargs");
+
+  xfer += oprot->writeFieldBegin("key", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString((*(this->key)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("value", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString((*(this->value)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("clientid", ::apache::thrift::protocol::T_STRING, 3);
+  xfer += oprot->writeString((*(this->clientid)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("timestamp", ::apache::thrift::protocol::T_LIST, 4);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I64, static_cast<uint32_t>((*(this->timestamp)).size()));
+    std::vector<int64_t> ::const_iterator _iter32;
+    for (_iter32 = (*(this->timestamp)).begin(); _iter32 != (*(this->timestamp)).end(); ++_iter32)
+    {
+      xfer += oprot->writeI64((*_iter32));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+uint32_t KeyValueStore_KVAddToList_args::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->key);
+          this->__isset.key = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->value);
+          this->__isset.value = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->clientid);
+          this->__isset.clientid = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 4:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->timestamp.clear();
+            uint32_t _size33;
+            ::apache::thrift::protocol::TType _etype36;
+            xfer += iprot->readListBegin(_etype36, _size33);
+            this->timestamp.resize(_size33);
+            uint32_t _i37;
+            for (_i37 = 0; _i37 < _size33; ++_i37)
+            {
+              xfer += iprot->readI64(this->timestamp[_i37]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.timestamp = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t KeyValueStore_KVAddToList_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  xfer += oprot->writeStructBegin("KeyValueStore_KVAddToList_args");
+
+  xfer += oprot->writeFieldBegin("key", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->key);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("value", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->value);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("clientid", ::apache::thrift::protocol::T_STRING, 3);
+  xfer += oprot->writeString(this->clientid);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("timestamp", ::apache::thrift::protocol::T_LIST, 4);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I64, static_cast<uint32_t>(this->timestamp.size()));
+    std::vector<int64_t> ::const_iterator _iter38;
+    for (_iter38 = this->timestamp.begin(); _iter38 != this->timestamp.end(); ++_iter38)
+    {
+      xfer += oprot->writeI64((*_iter38));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+uint32_t KeyValueStore_KVAddToList_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  xfer += oprot->writeStructBegin("KeyValueStore_KVAddToList_pargs");
+
+  xfer += oprot->writeFieldBegin("key", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString((*(this->key)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("value", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString((*(this->value)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("clientid", ::apache::thrift::protocol::T_STRING, 3);
+  xfer += oprot->writeString((*(this->clientid)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("timestamp", ::apache::thrift::protocol::T_LIST, 4);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I64, static_cast<uint32_t>((*(this->timestamp)).size()));
+    std::vector<int64_t> ::const_iterator _iter39;
+    for (_iter39 = (*(this->timestamp)).begin(); _iter39 != (*(this->timestamp)).end(); ++_iter39)
+    {
+      xfer += oprot->writeI64((*_iter39));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+uint32_t KeyValueStore_KVRemoveFromList_args::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->key);
+          this->__isset.key = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->value);
+          this->__isset.value = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->clientid);
+          this->__isset.clientid = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 4:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->timestamp.clear();
+            uint32_t _size40;
+            ::apache::thrift::protocol::TType _etype43;
+            xfer += iprot->readListBegin(_etype43, _size40);
+            this->timestamp.resize(_size40);
+            uint32_t _i44;
+            for (_i44 = 0; _i44 < _size40; ++_i44)
+            {
+              xfer += iprot->readI64(this->timestamp[_i44]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.timestamp = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t KeyValueStore_KVRemoveFromList_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  xfer += oprot->writeStructBegin("KeyValueStore_KVRemoveFromList_args");
+
+  xfer += oprot->writeFieldBegin("key", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->key);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("value", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->value);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("clientid", ::apache::thrift::protocol::T_STRING, 3);
+  xfer += oprot->writeString(this->clientid);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("timestamp", ::apache::thrift::protocol::T_LIST, 4);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I64, static_cast<uint32_t>(this->timestamp.size()));
+    std::vector<int64_t> ::const_iterator _iter45;
+    for (_iter45 = this->timestamp.begin(); _iter45 != this->timestamp.end(); ++_iter45)
+    {
+      xfer += oprot->writeI64((*_iter45));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+uint32_t KeyValueStore_KVRemoveFromList_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  xfer += oprot->writeStructBegin("KeyValueStore_KVRemoveFromList_pargs");
+
+  xfer += oprot->writeFieldBegin("key", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString((*(this->key)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("value", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString((*(this->value)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("clientid", ::apache::thrift::protocol::T_STRING, 3);
+  xfer += oprot->writeString((*(this->clientid)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("timestamp", ::apache::thrift::protocol::T_LIST, 4);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I64, static_cast<uint32_t>((*(this->timestamp)).size()));
+    std::vector<int64_t> ::const_iterator _iter46;
+    for (_iter46 = (*(this->timestamp)).begin(); _iter46 != (*(this->timestamp)).end(); ++_iter46)
+    {
+      xfer += oprot->writeI64((*_iter46));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
   return xfer;
 }
 
@@ -1222,6 +1648,72 @@ KVStoreStatus::type KeyValueStoreClient::recv_RemoveFromList()
   throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "RemoveFromList failed: unknown result");
 }
 
+void KeyValueStoreClient::KVPut(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp)
+{
+  send_KVPut(key, value, clientid, timestamp);
+}
+
+void KeyValueStoreClient::send_KVPut(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("KVPut", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  KeyValueStore_KVPut_pargs args;
+  args.key = &key;
+  args.value = &value;
+  args.clientid = &clientid;
+  args.timestamp = &timestamp;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void KeyValueStoreClient::KVAddToList(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp)
+{
+  send_KVAddToList(key, value, clientid, timestamp);
+}
+
+void KeyValueStoreClient::send_KVAddToList(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("KVAddToList", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  KeyValueStore_KVAddToList_pargs args;
+  args.key = &key;
+  args.value = &value;
+  args.clientid = &clientid;
+  args.timestamp = &timestamp;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+void KeyValueStoreClient::KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp)
+{
+  send_KVRemoveFromList(key, value, clientid, timestamp);
+}
+
+void KeyValueStoreClient::send_KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("KVRemoveFromList", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  KeyValueStore_KVRemoveFromList_pargs args;
+  args.key = &key;
+  args.value = &value;
+  args.clientid = &clientid;
+  args.timestamp = &timestamp;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
 bool KeyValueStoreProcessor::dispatchCall(::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, const std::string& fname, int32_t seqid, void* callContext) {
   ProcessMap::iterator pfn;
   pfn = processMap_.find(fname);
@@ -1509,6 +2001,117 @@ void KeyValueStoreProcessor::process_RemoveFromList(int32_t seqid, ::apache::thr
   if (this->eventHandler_.get() != NULL) {
     this->eventHandler_->postWrite(ctx, "KeyValueStore.RemoveFromList", bytes);
   }
+}
+
+void KeyValueStoreProcessor::process_KVPut(int32_t, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol*, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("KeyValueStore.KVPut", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "KeyValueStore.KVPut");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "KeyValueStore.KVPut");
+  }
+
+  KeyValueStore_KVPut_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "KeyValueStore.KVPut", bytes);
+  }
+
+  try {
+    iface_->KVPut(args.key, args.value, args.clientid, args.timestamp);
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "KeyValueStore.KVPut");
+    }
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->asyncComplete(ctx, "KeyValueStore.KVPut");
+  }
+
+  return;
+}
+
+void KeyValueStoreProcessor::process_KVAddToList(int32_t, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol*, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("KeyValueStore.KVAddToList", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "KeyValueStore.KVAddToList");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "KeyValueStore.KVAddToList");
+  }
+
+  KeyValueStore_KVAddToList_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "KeyValueStore.KVAddToList", bytes);
+  }
+
+  try {
+    iface_->KVAddToList(args.key, args.value, args.clientid, args.timestamp);
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "KeyValueStore.KVAddToList");
+    }
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->asyncComplete(ctx, "KeyValueStore.KVAddToList");
+  }
+
+  return;
+}
+
+void KeyValueStoreProcessor::process_KVRemoveFromList(int32_t, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol*, void* callContext)
+{
+  void* ctx = NULL;
+  if (this->eventHandler_.get() != NULL) {
+    ctx = this->eventHandler_->getContext("KeyValueStore.KVRemoveFromList", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "KeyValueStore.KVRemoveFromList");
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->preRead(ctx, "KeyValueStore.KVRemoveFromList");
+  }
+
+  KeyValueStore_KVRemoveFromList_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->postRead(ctx, "KeyValueStore.KVRemoveFromList", bytes);
+  }
+
+  try {
+    iface_->KVRemoveFromList(args.key, args.value, args.clientid, args.timestamp);
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != NULL) {
+      this->eventHandler_->handlerError(ctx, "KeyValueStore.KVRemoveFromList");
+    }
+    return;
+  }
+
+  if (this->eventHandler_.get() != NULL) {
+    this->eventHandler_->asyncComplete(ctx, "KeyValueStore.KVRemoveFromList");
+  }
+
+  return;
 }
 
 ::boost::shared_ptr< ::apache::thrift::TProcessor > KeyValueStoreProcessorFactory::getProcessor(const ::apache::thrift::TConnectionInfo& connInfo) {
