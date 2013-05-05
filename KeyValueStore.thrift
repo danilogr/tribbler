@@ -53,10 +53,10 @@ service KeyValueStore {
     KVStoreStatus Put(1:string key, 2:string value, 3:string clientid),
     KVStoreStatus AddToList(1:string key, 2:string value, 3:string clientid),
     KVStoreStatus RemoveFromList(1:string key, 2:string value, 3:string clientid),
-    KVStoreStatus Eval(1:string counter_key, 2:string user_post, 3:string user_list),
+    KVStoreStatus Eval(1:string counter_key, 2:string user_post, 3:string user_list, 4:string clientid),
 
     oneway void KVPut(1:string key, 2:string value, 3:string clientid),
     oneway void KVAddToList(1:string key, 2:string value, 3:string clientid),
     oneway void KVRemoveFromList(1:string key, 2:string value, 3:string clientid),
-    oneway void KVEval(1:string counter_key, 2:string user_post, 3:string user_list, 4:list<i64> timestamp)
+    oneway void KVEval(1:string counter_key, 2:string user_post, 3:string user_list, 4:string clientid, 5:list<i64> timestamp)
 }

@@ -20,11 +20,11 @@ class KeyValueStoreIf {
   virtual KVStoreStatus::type Put(const std::string& key, const std::string& value, const std::string& clientid) = 0;
   virtual KVStoreStatus::type AddToList(const std::string& key, const std::string& value, const std::string& clientid) = 0;
   virtual KVStoreStatus::type RemoveFromList(const std::string& key, const std::string& value, const std::string& clientid) = 0;
-  virtual KVStoreStatus::type Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list) = 0;
+  virtual KVStoreStatus::type Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid) = 0;
   virtual void KVPut(const std::string& key, const std::string& value, const std::string& clientid) = 0;
   virtual void KVAddToList(const std::string& key, const std::string& value, const std::string& clientid) = 0;
   virtual void KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid) = 0;
-  virtual void KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::vector<int64_t> & timestamp) = 0;
+  virtual void KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid, const std::vector<int64_t> & timestamp) = 0;
 };
 
 class KeyValueStoreIfFactory {
@@ -72,7 +72,7 @@ class KeyValueStoreNull : virtual public KeyValueStoreIf {
     KVStoreStatus::type _return = (KVStoreStatus::type)0;
     return _return;
   }
-  KVStoreStatus::type Eval(const std::string& /* counter_key */, const std::string& /* user_post */, const std::string& /* user_list */) {
+  KVStoreStatus::type Eval(const std::string& /* counter_key */, const std::string& /* user_post */, const std::string& /* user_list */, const std::string& /* clientid */) {
     KVStoreStatus::type _return = (KVStoreStatus::type)0;
     return _return;
   }
@@ -85,7 +85,7 @@ class KeyValueStoreNull : virtual public KeyValueStoreIf {
   void KVRemoveFromList(const std::string& /* key */, const std::string& /* value */, const std::string& /* clientid */) {
     return;
   }
-  void KVEval(const std::string& /* counter_key */, const std::string& /* user_post */, const std::string& /* user_list */, const std::vector<int64_t> & /* timestamp */) {
+  void KVEval(const std::string& /* counter_key */, const std::string& /* user_post */, const std::string& /* user_list */, const std::string& /* clientid */, const std::vector<int64_t> & /* timestamp */) {
     return;
   }
 };
@@ -685,16 +685,17 @@ class KeyValueStore_RemoveFromList_presult {
 };
 
 typedef struct _KeyValueStore_Eval_args__isset {
-  _KeyValueStore_Eval_args__isset() : counter_key(false), user_post(false), user_list(false) {}
+  _KeyValueStore_Eval_args__isset() : counter_key(false), user_post(false), user_list(false), clientid(false) {}
   bool counter_key;
   bool user_post;
   bool user_list;
+  bool clientid;
 } _KeyValueStore_Eval_args__isset;
 
 class KeyValueStore_Eval_args {
  public:
 
-  KeyValueStore_Eval_args() : counter_key(), user_post(), user_list() {
+  KeyValueStore_Eval_args() : counter_key(), user_post(), user_list(), clientid() {
   }
 
   virtual ~KeyValueStore_Eval_args() throw() {}
@@ -702,6 +703,7 @@ class KeyValueStore_Eval_args {
   std::string counter_key;
   std::string user_post;
   std::string user_list;
+  std::string clientid;
 
   _KeyValueStore_Eval_args__isset __isset;
 
@@ -717,6 +719,10 @@ class KeyValueStore_Eval_args {
     user_list = val;
   }
 
+  void __set_clientid(const std::string& val) {
+    clientid = val;
+  }
+
   bool operator == (const KeyValueStore_Eval_args & rhs) const
   {
     if (!(counter_key == rhs.counter_key))
@@ -724,6 +730,8 @@ class KeyValueStore_Eval_args {
     if (!(user_post == rhs.user_post))
       return false;
     if (!(user_list == rhs.user_list))
+      return false;
+    if (!(clientid == rhs.clientid))
       return false;
     return true;
   }
@@ -748,6 +756,7 @@ class KeyValueStore_Eval_pargs {
   const std::string* counter_key;
   const std::string* user_post;
   const std::string* user_list;
+  const std::string* clientid;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
@@ -1018,17 +1027,18 @@ class KeyValueStore_KVRemoveFromList_pargs {
 };
 
 typedef struct _KeyValueStore_KVEval_args__isset {
-  _KeyValueStore_KVEval_args__isset() : counter_key(false), user_post(false), user_list(false), timestamp(false) {}
+  _KeyValueStore_KVEval_args__isset() : counter_key(false), user_post(false), user_list(false), clientid(false), timestamp(false) {}
   bool counter_key;
   bool user_post;
   bool user_list;
+  bool clientid;
   bool timestamp;
 } _KeyValueStore_KVEval_args__isset;
 
 class KeyValueStore_KVEval_args {
  public:
 
-  KeyValueStore_KVEval_args() : counter_key(), user_post(), user_list() {
+  KeyValueStore_KVEval_args() : counter_key(), user_post(), user_list(), clientid() {
   }
 
   virtual ~KeyValueStore_KVEval_args() throw() {}
@@ -1036,6 +1046,7 @@ class KeyValueStore_KVEval_args {
   std::string counter_key;
   std::string user_post;
   std::string user_list;
+  std::string clientid;
   std::vector<int64_t>  timestamp;
 
   _KeyValueStore_KVEval_args__isset __isset;
@@ -1052,6 +1063,10 @@ class KeyValueStore_KVEval_args {
     user_list = val;
   }
 
+  void __set_clientid(const std::string& val) {
+    clientid = val;
+  }
+
   void __set_timestamp(const std::vector<int64_t> & val) {
     timestamp = val;
   }
@@ -1063,6 +1078,8 @@ class KeyValueStore_KVEval_args {
     if (!(user_post == rhs.user_post))
       return false;
     if (!(user_list == rhs.user_list))
+      return false;
+    if (!(clientid == rhs.clientid))
       return false;
     if (!(timestamp == rhs.timestamp))
       return false;
@@ -1089,6 +1106,7 @@ class KeyValueStore_KVEval_pargs {
   const std::string* counter_key;
   const std::string* user_post;
   const std::string* user_list;
+  const std::string* clientid;
   const std::vector<int64_t> * timestamp;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -1130,8 +1148,8 @@ class KeyValueStoreClient : virtual public KeyValueStoreIf {
   KVStoreStatus::type RemoveFromList(const std::string& key, const std::string& value, const std::string& clientid);
   void send_RemoveFromList(const std::string& key, const std::string& value, const std::string& clientid);
   KVStoreStatus::type recv_RemoveFromList();
-  KVStoreStatus::type Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list);
-  void send_Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list);
+  KVStoreStatus::type Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid);
+  void send_Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid);
   KVStoreStatus::type recv_Eval();
   void KVPut(const std::string& key, const std::string& value, const std::string& clientid);
   void send_KVPut(const std::string& key, const std::string& value, const std::string& clientid);
@@ -1139,8 +1157,8 @@ class KeyValueStoreClient : virtual public KeyValueStoreIf {
   void send_KVAddToList(const std::string& key, const std::string& value, const std::string& clientid);
   void KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid);
   void send_KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid);
-  void KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::vector<int64_t> & timestamp);
-  void send_KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::vector<int64_t> & timestamp);
+  void KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid, const std::vector<int64_t> & timestamp);
+  void send_KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid, const std::vector<int64_t> & timestamp);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -1254,13 +1272,13 @@ class KeyValueStoreMultiface : virtual public KeyValueStoreIf {
     return ifaces_[i]->RemoveFromList(key, value, clientid);
   }
 
-  KVStoreStatus::type Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list) {
+  KVStoreStatus::type Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->Eval(counter_key, user_post, user_list);
+      ifaces_[i]->Eval(counter_key, user_post, user_list, clientid);
     }
-    return ifaces_[i]->Eval(counter_key, user_post, user_list);
+    return ifaces_[i]->Eval(counter_key, user_post, user_list, clientid);
   }
 
   void KVPut(const std::string& key, const std::string& value, const std::string& clientid) {
@@ -1290,13 +1308,13 @@ class KeyValueStoreMultiface : virtual public KeyValueStoreIf {
     ifaces_[i]->KVRemoveFromList(key, value, clientid);
   }
 
-  void KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::vector<int64_t> & timestamp) {
+  void KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid, const std::vector<int64_t> & timestamp) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->KVEval(counter_key, user_post, user_list, timestamp);
+      ifaces_[i]->KVEval(counter_key, user_post, user_list, clientid, timestamp);
     }
-    ifaces_[i]->KVEval(counter_key, user_post, user_list, timestamp);
+    ifaces_[i]->KVEval(counter_key, user_post, user_list, clientid, timestamp);
   }
 
 };

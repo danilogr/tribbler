@@ -970,6 +970,14 @@ uint32_t KeyValueStore_Eval_args::read(::apache::thrift::protocol::TProtocol* ip
           xfer += iprot->skip(ftype);
         }
         break;
+      case 4:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->clientid);
+          this->__isset.clientid = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -998,6 +1006,10 @@ uint32_t KeyValueStore_Eval_args::write(::apache::thrift::protocol::TProtocol* o
   xfer += oprot->writeString(this->user_list);
   xfer += oprot->writeFieldEnd();
 
+  xfer += oprot->writeFieldBegin("clientid", ::apache::thrift::protocol::T_STRING, 4);
+  xfer += oprot->writeString(this->clientid);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -1017,6 +1029,10 @@ uint32_t KeyValueStore_Eval_pargs::write(::apache::thrift::protocol::TProtocol* 
 
   xfer += oprot->writeFieldBegin("user_list", ::apache::thrift::protocol::T_STRING, 3);
   xfer += oprot->writeString((*(this->user_list)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("clientid", ::apache::thrift::protocol::T_STRING, 4);
+  xfer += oprot->writeString((*(this->clientid)));
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldStop();
@@ -1463,6 +1479,14 @@ uint32_t KeyValueStore_KVEval_args::read(::apache::thrift::protocol::TProtocol* 
         }
         break;
       case 4:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->clientid);
+          this->__isset.clientid = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 5:
         if (ftype == ::apache::thrift::protocol::T_LIST) {
           {
             this->timestamp.clear();
@@ -1510,7 +1534,11 @@ uint32_t KeyValueStore_KVEval_args::write(::apache::thrift::protocol::TProtocol*
   xfer += oprot->writeString(this->user_list);
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("timestamp", ::apache::thrift::protocol::T_LIST, 4);
+  xfer += oprot->writeFieldBegin("clientid", ::apache::thrift::protocol::T_STRING, 4);
+  xfer += oprot->writeString(this->clientid);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("timestamp", ::apache::thrift::protocol::T_LIST, 5);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I64, static_cast<uint32_t>(this->timestamp.size()));
     std::vector<int64_t> ::const_iterator _iter21;
@@ -1543,7 +1571,11 @@ uint32_t KeyValueStore_KVEval_pargs::write(::apache::thrift::protocol::TProtocol
   xfer += oprot->writeString((*(this->user_list)));
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("timestamp", ::apache::thrift::protocol::T_LIST, 4);
+  xfer += oprot->writeFieldBegin("clientid", ::apache::thrift::protocol::T_STRING, 4);
+  xfer += oprot->writeString((*(this->clientid)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("timestamp", ::apache::thrift::protocol::T_LIST, 5);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I64, static_cast<uint32_t>((*(this->timestamp)).size()));
     std::vector<int64_t> ::const_iterator _iter22;
@@ -1856,13 +1888,13 @@ KVStoreStatus::type KeyValueStoreClient::recv_RemoveFromList()
   throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "RemoveFromList failed: unknown result");
 }
 
-KVStoreStatus::type KeyValueStoreClient::Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list)
+KVStoreStatus::type KeyValueStoreClient::Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid)
 {
-  send_Eval(counter_key, user_post, user_list);
+  send_Eval(counter_key, user_post, user_list, clientid);
   return recv_Eval();
 }
 
-void KeyValueStoreClient::send_Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list)
+void KeyValueStoreClient::send_Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid)
 {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("Eval", ::apache::thrift::protocol::T_CALL, cseqid);
@@ -1871,6 +1903,7 @@ void KeyValueStoreClient::send_Eval(const std::string& counter_key, const std::s
   args.counter_key = &counter_key;
   args.user_post = &user_post;
   args.user_list = &user_list;
+  args.clientid = &clientid;
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -1979,12 +2012,12 @@ void KeyValueStoreClient::send_KVRemoveFromList(const std::string& key, const st
   oprot_->getTransport()->flush();
 }
 
-void KeyValueStoreClient::KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::vector<int64_t> & timestamp)
+void KeyValueStoreClient::KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid, const std::vector<int64_t> & timestamp)
 {
-  send_KVEval(counter_key, user_post, user_list, timestamp);
+  send_KVEval(counter_key, user_post, user_list, clientid, timestamp);
 }
 
-void KeyValueStoreClient::send_KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::vector<int64_t> & timestamp)
+void KeyValueStoreClient::send_KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid, const std::vector<int64_t> & timestamp)
 {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("KVEval", ::apache::thrift::protocol::T_CALL, cseqid);
@@ -1993,6 +2026,7 @@ void KeyValueStoreClient::send_KVEval(const std::string& counter_key, const std:
   args.counter_key = &counter_key;
   args.user_post = &user_post;
   args.user_list = &user_list;
+  args.clientid = &clientid;
   args.timestamp = &timestamp;
   args.write(oprot_);
 
@@ -2313,7 +2347,7 @@ void KeyValueStoreProcessor::process_Eval(int32_t seqid, ::apache::thrift::proto
 
   KeyValueStore_Eval_result result;
   try {
-    result.success = iface_->Eval(args.counter_key, args.user_post, args.user_list);
+    result.success = iface_->Eval(args.counter_key, args.user_post, args.user_list, args.clientid);
     result.__isset.success = true;
   } catch (const std::exception& e) {
     if (this->eventHandler_.get() != NULL) {
@@ -2477,7 +2511,7 @@ void KeyValueStoreProcessor::process_KVEval(int32_t, ::apache::thrift::protocol:
   }
 
   try {
-    iface_->KVEval(args.counter_key, args.user_post, args.user_list, args.timestamp);
+    iface_->KVEval(args.counter_key, args.user_post, args.user_list, args.clientid, args.timestamp);
   } catch (const std::exception& e) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "KeyValueStore.KVEval");

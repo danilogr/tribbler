@@ -37,10 +37,10 @@ class KeyValueStoreHandler : virtual public kvs::KeyValueStoreIf {
 
       kvs::KVStoreStatus::type RemoveFromList(const std::string& key, const std::string& value, const std::string& clientid); 
 
-      kvs::KVStoreStatus::type Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list);
+      kvs::KVStoreStatus::type Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid);
 
       /* One-way functions used to implement replication  */
-      void KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::vector<int64_t> & timestamp);
+      void KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string &clientid,  const std::vector<int64_t> & timestamp);
 
       void KVPut(const std::string& key, const std::string& value, const std::string& clientid);
 
@@ -59,10 +59,13 @@ class KeyValueStoreHandler : virtual public kvs::KeyValueStoreIf {
       ListMap list_keys;
 
       /* Remote functions used to update other servers */
-      void RemoveEval(std::string arg1, std::string arg2, std::string arg3);
+      void RemoteEval(std::string arg1, std::string arg2, std::string arg3);
       void RemotePut(std::string key, std::string value);
       void RemoteAddToList(std::string key, std::string value);
       void RemoteRemoveFromList(std::string key, std::string value);
+
+      /* Eval function */
+      bool evaluate(const std::string &global, const std::string &post, const std::string &list);
 
 };
 

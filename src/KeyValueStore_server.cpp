@@ -200,10 +200,83 @@ kvs::KVStoreStatus::type KeyValueStoreHandler::RemoveFromList(const std::string&
   return response; 
 }
 
-kvs::KVStoreStatus::type KeyValueStoreHandler::Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list)
+kvs::KVStoreStatus::type KeyValueStoreHandler::Eval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid)
 {
-    // Your implementation goes here
-    printf("Eval\n");
+
+    kvs::KVStoreStatus::type response = kvs::KVStoreStatus::OK;
+
+    std::cout << "EVAL [" << counter_key << "," << user_post << "," << user_list << "] FROM" <<  clientid << std::endl;
+
+
+    //if evaluate succeds
+    if(evaluate(counter_key,user_post,user_list))
+    {
+
+      //check if this was not a local call
+      //and propagate
+      if(clientid != _idstr)
+      {
+        RemoteEval(counter_key,user_post,user_list);
+      }
+
+    } else {
+
+      response = kvs::KVStoreStatus::EVALFAILED;
+    }
+
+    return response;
+
+
+}
+
+
+/*
+ * Special evaluate function
+ * TODO: change to evaluate a simple script language
+ * */
+bool KeyValueStoreHandler::evaluate(const std::string &global, const std::string &post, const std::string &list)
+{
+
+  try
+  {
+
+    //
+    //first, increment global counter "global"
+    //
+    std::string global_counter =  single_keys[global];
+    int counter = 0;
+
+    try {
+      counter = boost::lexical_cast<int>( global_counter );
+    } catch( boost::bad_lexical_cast const& ) {
+      //initialize with 0
+      global_counter = "0";
+    }
+    //increment
+    counter++;
+
+    //save 
+    single_keys[global] = boost::lexical_cast<std::string>(counter);
+
+    //
+    //second, save user post
+    //
+    single_keys[global_counter] = post;
+
+    //
+    //third, add post to user list
+    //
+    list_keys[list].insert(global_counter);
+
+
+
+  } catch (std::bad_alloc& ba)
+  {
+    return false;
+  }
+
+  return true;
+
 }
 
 
@@ -211,14 +284,15 @@ kvs::KVStoreStatus::type KeyValueStoreHandler::Eval(const std::string& counter_k
  * One-way functions used for replication
  * (functions that were receieved from other server as a way to replicate data here)
  * */
-void  KeyValueStoreHandler::KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::vector<int64_t> & timestamp)
+void  KeyValueStoreHandler::KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid, const std::vector<int64_t> & timestamp)
 {
-    // Your implementation goes here
-    printf("KVEval\n");
+  //TODO(danilo)
+  //Deal with timestamp and clientid(implement queue)
+  
+  //replicate call
+  evaluate(counter_key,user_post,user_list);
+
 }
-
-
-
 
 void KeyValueStoreHandler::KVPut(const std::string& key, const std::string& value, const std::string& clientid) {
 
@@ -360,7 +434,7 @@ void  KeyValueStoreHandler::RemoteRemoveFromList(std::string key, std::string va
 }
 
 
-void KeyValueStoreHandler::RemoveEval(std::string arg1, std::string arg2, std::string arg3)
+void KeyValueStoreHandler::RemoteEval(std::string arg1, std::string arg2, std::string arg3)
 {
   // increment local timestamp
   _timestamp[_id]++;
@@ -380,7 +454,7 @@ void KeyValueStoreHandler::RemoveEval(std::string arg1, std::string arg2, std::s
       try
       {
         transport->open();
-        client.KVEval(arg1, arg2, arg3,_timestamp);
+        client.KVEval(arg1, arg2, arg3, _idstr,_timestamp);
         transport->close();
         //all ok, so it was on
         _backendOnce[i] = true;
