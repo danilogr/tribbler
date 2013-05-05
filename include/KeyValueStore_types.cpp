@@ -140,8 +140,8 @@ void swap(GetResponse &a, GetResponse &b) {
   swap(a.__isset, b.__isset);
 }
 
-const char* GetListResponse::ascii_fingerprint = "2A650EF49BC6B403F8FC4B08B46503CF";
-const uint8_t GetListResponse::binary_fingerprint[16] = {0x2A,0x65,0x0E,0xF4,0x9B,0xC6,0xB4,0x03,0xF8,0xFC,0x4B,0x08,0xB4,0x65,0x03,0xCF};
+const char* GetListResponse::ascii_fingerprint = "A22BE3E84688C9DA4E00CC902B4EE818";
+const uint8_t GetListResponse::binary_fingerprint[16] = {0xA2,0x2B,0xE3,0xE8,0x46,0x88,0xC9,0xDA,0x4E,0x00,0xCC,0x90,0x2B,0x4E,0xE8,0x18};
 
 uint32_t GetListResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
 
@@ -193,26 +193,6 @@ uint32_t GetListResponse::read(::apache::thrift::protocol::TProtocol* iprot) {
           xfer += iprot->skip(ftype);
         }
         break;
-      case 3:
-        if (ftype == ::apache::thrift::protocol::T_LIST) {
-          {
-            this->timestamp.clear();
-            uint32_t _size13;
-            ::apache::thrift::protocol::TType _etype16;
-            xfer += iprot->readListBegin(_etype16, _size13);
-            this->timestamp.resize(_size13);
-            uint32_t _i17;
-            for (_i17 = 0; _i17 < _size13; ++_i17)
-            {
-              xfer += iprot->readI64(this->timestamp[_i17]);
-            }
-            xfer += iprot->readListEnd();
-          }
-          this->__isset.timestamp = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -236,22 +216,10 @@ uint32_t GetListResponse::write(::apache::thrift::protocol::TProtocol* oprot) co
   xfer += oprot->writeFieldBegin("values", ::apache::thrift::protocol::T_LIST, 2);
   {
     xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->values.size()));
-    std::vector<std::string> ::const_iterator _iter18;
-    for (_iter18 = this->values.begin(); _iter18 != this->values.end(); ++_iter18)
+    std::vector<std::string> ::const_iterator _iter13;
+    for (_iter13 = this->values.begin(); _iter13 != this->values.end(); ++_iter13)
     {
-      xfer += oprot->writeString((*_iter18));
-    }
-    xfer += oprot->writeListEnd();
-  }
-  xfer += oprot->writeFieldEnd();
-
-  xfer += oprot->writeFieldBegin("timestamp", ::apache::thrift::protocol::T_LIST, 3);
-  {
-    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I64, static_cast<uint32_t>(this->timestamp.size()));
-    std::vector<int64_t> ::const_iterator _iter19;
-    for (_iter19 = this->timestamp.begin(); _iter19 != this->timestamp.end(); ++_iter19)
-    {
-      xfer += oprot->writeI64((*_iter19));
+      xfer += oprot->writeString((*_iter13));
     }
     xfer += oprot->writeListEnd();
   }
@@ -266,7 +234,6 @@ void swap(GetListResponse &a, GetListResponse &b) {
   using ::std::swap;
   swap(a.status, b.status);
   swap(a.values, b.values);
-  swap(a.timestamp, b.timestamp);
   swap(a.__isset, b.__isset);
 }
 

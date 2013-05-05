@@ -52,12 +52,12 @@ class KeyValueStoreHandler : virtual public KeyValueStoreIf {
     printf("KVPut\n");
   }
 
-  void KVAddToList(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp) {
+  void KVAddToList(const std::string& key, const std::string& value, const std::string& clientid) {
     // Your implementation goes here
     printf("KVAddToList\n");
   }
 
-  void KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp) {
+  void KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid) {
     // Your implementation goes here
     printf("KVRemoveFromList\n");
   }

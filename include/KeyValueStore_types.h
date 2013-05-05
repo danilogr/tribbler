@@ -90,17 +90,16 @@ class GetResponse {
 void swap(GetResponse &a, GetResponse &b);
 
 typedef struct _GetListResponse__isset {
-  _GetListResponse__isset() : status(false), values(false), timestamp(false) {}
+  _GetListResponse__isset() : status(false), values(false) {}
   bool status;
   bool values;
-  bool timestamp;
 } _GetListResponse__isset;
 
 class GetListResponse {
  public:
 
-  static const char* ascii_fingerprint; // = "2A650EF49BC6B403F8FC4B08B46503CF";
-  static const uint8_t binary_fingerprint[16]; // = {0x2A,0x65,0x0E,0xF4,0x9B,0xC6,0xB4,0x03,0xF8,0xFC,0x4B,0x08,0xB4,0x65,0x03,0xCF};
+  static const char* ascii_fingerprint; // = "A22BE3E84688C9DA4E00CC902B4EE818";
+  static const uint8_t binary_fingerprint[16]; // = {0xA2,0x2B,0xE3,0xE8,0x46,0x88,0xC9,0xDA,0x4E,0x00,0xCC,0x90,0x2B,0x4E,0xE8,0x18};
 
   GetListResponse() : status((KVStoreStatus::type)0) {
   }
@@ -109,7 +108,6 @@ class GetListResponse {
 
   KVStoreStatus::type status;
   std::vector<std::string>  values;
-  std::vector<int64_t>  timestamp;
 
   _GetListResponse__isset __isset;
 
@@ -121,17 +119,11 @@ class GetListResponse {
     values = val;
   }
 
-  void __set_timestamp(const std::vector<int64_t> & val) {
-    timestamp = val;
-  }
-
   bool operator == (const GetListResponse & rhs) const
   {
     if (!(status == rhs.status))
       return false;
     if (!(values == rhs.values))
-      return false;
-    if (!(timestamp == rhs.timestamp))
       return false;
     return true;
   }

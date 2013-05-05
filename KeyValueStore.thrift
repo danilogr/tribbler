@@ -1,9 +1,11 @@
 # RPC Interface between Tribble server and backend KV store.
 # Malveeka Tewari (malveeka@cs.ucsd.edu)
 # Modified by Danilo (danilod100@gmail.com)
-# Include timestamps as part of functions KVPut, KVAddToList,
-# KVRemoveFromList
-# Include timestamp as return from GetResponse and GetListResponse
+# (this is a specific solution, meaning that
+# for a wide synchronized solution I would add
+# a timestamp for all Put,Add and Delete functions)
+# Include timestamp as part of functions KVPut
+# Include timestamp as return from GetResponse
 
 namespace cpp KeyValueStore
 
@@ -39,7 +41,6 @@ struct GetResponse {
 struct GetListResponse {
     1: KVStoreStatus status,
     2: list<string> values,
-    3: list<i64> timestamp
 }
 
 /**
@@ -54,6 +55,6 @@ service KeyValueStore {
     KVStoreStatus RemoveFromList(1:string key, 2:string value, 3:string clientid),
 
     oneway void KVPut(1:string key, 2:string value, 3:string clientid, 4:list<i64> timestamp),
-    oneway void KVAddToList(1:string key, 2:string value, 3:string clientid, 4:list<i64> timestamp),
-    oneway void KVRemoveFromList(1:string key, 2:string value, 3:string clientid, 4:list<i64> timestamp)
+    oneway void KVAddToList(1:string key, 2:string value, 3:string clientid),
+    oneway void KVRemoveFromList(1:string key, 2:string value, 3:string clientid)
 }

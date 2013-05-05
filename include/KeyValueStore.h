@@ -21,8 +21,8 @@ class KeyValueStoreIf {
   virtual KVStoreStatus::type AddToList(const std::string& key, const std::string& value, const std::string& clientid) = 0;
   virtual KVStoreStatus::type RemoveFromList(const std::string& key, const std::string& value, const std::string& clientid) = 0;
   virtual void KVPut(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp) = 0;
-  virtual void KVAddToList(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp) = 0;
-  virtual void KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp) = 0;
+  virtual void KVAddToList(const std::string& key, const std::string& value, const std::string& clientid) = 0;
+  virtual void KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid) = 0;
 };
 
 class KeyValueStoreIfFactory {
@@ -73,10 +73,10 @@ class KeyValueStoreNull : virtual public KeyValueStoreIf {
   void KVPut(const std::string& /* key */, const std::string& /* value */, const std::string& /* clientid */, const std::vector<int64_t> & /* timestamp */) {
     return;
   }
-  void KVAddToList(const std::string& /* key */, const std::string& /* value */, const std::string& /* clientid */, const std::vector<int64_t> & /* timestamp */) {
+  void KVAddToList(const std::string& /* key */, const std::string& /* value */, const std::string& /* clientid */) {
     return;
   }
-  void KVRemoveFromList(const std::string& /* key */, const std::string& /* value */, const std::string& /* clientid */, const std::vector<int64_t> & /* timestamp */) {
+  void KVRemoveFromList(const std::string& /* key */, const std::string& /* value */, const std::string& /* clientid */) {
     return;
   }
 };
@@ -754,11 +754,10 @@ class KeyValueStore_KVPut_pargs {
 };
 
 typedef struct _KeyValueStore_KVAddToList_args__isset {
-  _KeyValueStore_KVAddToList_args__isset() : key(false), value(false), clientid(false), timestamp(false) {}
+  _KeyValueStore_KVAddToList_args__isset() : key(false), value(false), clientid(false) {}
   bool key;
   bool value;
   bool clientid;
-  bool timestamp;
 } _KeyValueStore_KVAddToList_args__isset;
 
 class KeyValueStore_KVAddToList_args {
@@ -772,7 +771,6 @@ class KeyValueStore_KVAddToList_args {
   std::string key;
   std::string value;
   std::string clientid;
-  std::vector<int64_t>  timestamp;
 
   _KeyValueStore_KVAddToList_args__isset __isset;
 
@@ -788,10 +786,6 @@ class KeyValueStore_KVAddToList_args {
     clientid = val;
   }
 
-  void __set_timestamp(const std::vector<int64_t> & val) {
-    timestamp = val;
-  }
-
   bool operator == (const KeyValueStore_KVAddToList_args & rhs) const
   {
     if (!(key == rhs.key))
@@ -799,8 +793,6 @@ class KeyValueStore_KVAddToList_args {
     if (!(value == rhs.value))
       return false;
     if (!(clientid == rhs.clientid))
-      return false;
-    if (!(timestamp == rhs.timestamp))
       return false;
     return true;
   }
@@ -825,18 +817,16 @@ class KeyValueStore_KVAddToList_pargs {
   const std::string* key;
   const std::string* value;
   const std::string* clientid;
-  const std::vector<int64_t> * timestamp;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
 };
 
 typedef struct _KeyValueStore_KVRemoveFromList_args__isset {
-  _KeyValueStore_KVRemoveFromList_args__isset() : key(false), value(false), clientid(false), timestamp(false) {}
+  _KeyValueStore_KVRemoveFromList_args__isset() : key(false), value(false), clientid(false) {}
   bool key;
   bool value;
   bool clientid;
-  bool timestamp;
 } _KeyValueStore_KVRemoveFromList_args__isset;
 
 class KeyValueStore_KVRemoveFromList_args {
@@ -850,7 +840,6 @@ class KeyValueStore_KVRemoveFromList_args {
   std::string key;
   std::string value;
   std::string clientid;
-  std::vector<int64_t>  timestamp;
 
   _KeyValueStore_KVRemoveFromList_args__isset __isset;
 
@@ -866,10 +855,6 @@ class KeyValueStore_KVRemoveFromList_args {
     clientid = val;
   }
 
-  void __set_timestamp(const std::vector<int64_t> & val) {
-    timestamp = val;
-  }
-
   bool operator == (const KeyValueStore_KVRemoveFromList_args & rhs) const
   {
     if (!(key == rhs.key))
@@ -877,8 +862,6 @@ class KeyValueStore_KVRemoveFromList_args {
     if (!(value == rhs.value))
       return false;
     if (!(clientid == rhs.clientid))
-      return false;
-    if (!(timestamp == rhs.timestamp))
       return false;
     return true;
   }
@@ -903,7 +886,6 @@ class KeyValueStore_KVRemoveFromList_pargs {
   const std::string* key;
   const std::string* value;
   const std::string* clientid;
-  const std::vector<int64_t> * timestamp;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
@@ -946,10 +928,10 @@ class KeyValueStoreClient : virtual public KeyValueStoreIf {
   KVStoreStatus::type recv_RemoveFromList();
   void KVPut(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp);
   void send_KVPut(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp);
-  void KVAddToList(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp);
-  void send_KVAddToList(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp);
-  void KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp);
-  void send_KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp);
+  void KVAddToList(const std::string& key, const std::string& value, const std::string& clientid);
+  void send_KVAddToList(const std::string& key, const std::string& value, const std::string& clientid);
+  void KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid);
+  void send_KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -1068,22 +1050,22 @@ class KeyValueStoreMultiface : virtual public KeyValueStoreIf {
     ifaces_[i]->KVPut(key, value, clientid, timestamp);
   }
 
-  void KVAddToList(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp) {
+  void KVAddToList(const std::string& key, const std::string& value, const std::string& clientid) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->KVAddToList(key, value, clientid, timestamp);
+      ifaces_[i]->KVAddToList(key, value, clientid);
     }
-    ifaces_[i]->KVAddToList(key, value, clientid, timestamp);
+    ifaces_[i]->KVAddToList(key, value, clientid);
   }
 
-  void KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid, const std::vector<int64_t> & timestamp) {
+  void KVRemoveFromList(const std::string& key, const std::string& value, const std::string& clientid) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->KVRemoveFromList(key, value, clientid, timestamp);
+      ifaces_[i]->KVRemoveFromList(key, value, clientid);
     }
-    ifaces_[i]->KVRemoveFromList(key, value, clientid, timestamp);
+    ifaces_[i]->KVRemoveFromList(key, value, clientid);
   }
 
 };
