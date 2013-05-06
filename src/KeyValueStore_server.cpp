@@ -13,7 +13,7 @@ using boost::shared_ptr;
 
 //using namespace  ::KeyValueStore;
 //KeyValueStoreHandler::
-KeyValueStoreHandler::KeyValueStoreHandler(int instanceId, const ServerList &server) {
+KeyValueStoreHandler::KeyValueStoreHandler(int instanceId, const ServerList &server) :buf(_timestamp) {
 
     //server id
     _id = instanceId;
@@ -296,12 +296,20 @@ bool KeyValueStoreHandler::evaluate(const std::string &global, const std::string
  * */
 void  KeyValueStoreHandler::KVEval(const std::string& counter_key, const std::string& user_post, const std::string& user_list, const std::string& clientid, const std::vector<int64_t> & timestamp)
 {
-  //TODO(danilo)
-  //Deal with timestamp and clientid(implement queue)
-  
-  //replicate call
-  evaluate(counter_key,user_post,user_list);
 
+  //bufferize the received operation 
+  buf.bufferize(timestamp,boost::lexical_cast<int>(clientid),counter_key,user_post,user_list);
+
+  //now loop evaluating operations until that's not possible
+  std::pair<bool,BufferedOperation> r = buf.getNextOperation();
+  while(r.first)
+  { 
+    BufferedOperation &b = r.second;
+    evaluate(b.op.arg1,b.op.arg2,b.op.arg3);
+
+    //try again
+    r = buf.getNextOperation();
+  }
 }
 
 void KeyValueStoreHandler::KVPut(const std::string& key, const std::string& value, const std::string& clientid) {

@@ -90,7 +90,7 @@ class KeyValueStoreHandler : virtual public kvs::KeyValueStoreIf {
           Timestamp ts;
 
          BufferedOperation(const Timestamp &t, const Operation&o) : op(o), ts(t) {};
-         BufferedOperation();
+         BufferedOperation() {};
       };
 
       /* This class holds a buffer of timestamp and deals with
@@ -107,9 +107,10 @@ class KeyValueStoreHandler : virtual public kvs::KeyValueStoreIf {
           //holds a vector timestamp plus the server that issued it
           std::list<BufferedOperation> buffer;
           std::vector<int64_t> &localts;
+          int maxcompare;
 
         public:
-          TimestampBuffer(std::vector<int64_t> &t) : localts(t){};
+          TimestampBuffer(std::vector<int64_t> &t) : localts(t){ maxcompare = t.size();};
 
           //gives the next operation to the user or returns false
           //when no more valid operations are available
@@ -118,14 +119,74 @@ class KeyValueStoreHandler : virtual public kvs::KeyValueStoreIf {
           {
             if(buffer.size() == 0)
               return std::make_pair(false,BufferedOperation());
+
+            std::list<BufferedOperation>::iterator it = buffer.begin();
+
+            //for each element, check if the element a valid next timestamp
+
+            bool found = false;
+
+            //look for a candidate
+            while(it != buffer.end() && !found)
+            {
+                BufferedOperation &bo = *it;
+                BufferedOperation::Timestamp &ts= bo.ts;
+                found = true;
+                for(int i=0; i < maxcompare; i++)
+                {
+                  //checking the guy that sent
+                  if(i == ts.id)
+                  {
+                    //check condition
+                    if(localts[i] +1 != ts.vt[i])
+                    {
+                      found = false;
+                      break;
+                    }
+                  } else {
+                    //check condition
+                    if(localts[i] < ts.vt[i])
+                    {
+                      found = false;
+                      break;
+                    }
+
+                  }
+                }
+                //just increment if nothing was found
+                if(!found)
+                  it++;
+            }
+
+            //if found
+            if(found)
+            {
+              //adjust local clock
+              BufferedOperation bo = *it;
+              BufferedOperation::Timestamp &ts = bo.ts;
+
+              //increment local (copy local)
+              localts[ts.id] == ts.vt[ts.id];
+
+              //remove from buffer
+              buffer.erase(it);
+
+              //return
+              return std::make_pair(true,bo);
+            } else {
+              return std::make_pair(false,BufferedOperation());
+            }
+
+
           }
 
-          void bufferize(const std::vector<int64_t> &ts, int id, const BufferedOperation::Operation &o)
+          void bufferize(const std::vector<int64_t> &ts, int id, const std::string &arg1, const std::string &arg2, const std::string &arg3)
           {
-              buffer.push_back(BufferedOperation(BufferedOperation::Timestamp(ts,id),o));
+              buffer.push_back(BufferedOperation(BufferedOperation::Timestamp(ts,id),BufferedOperation::Operation(arg1,arg2,arg3)));
           }
       };
 
+      TimestampBuffer buf;
 
       /* Remote functions used to update other servers */
       void RemoteEval(std::string arg1, std::string arg2, std::string arg3);
