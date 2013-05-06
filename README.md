@@ -7,7 +7,7 @@ It's a Twitter-like system implemented using Apache Thrift RPCs.
 
 >
 >This code is part of [CSE223B SP13](http://cseweb.ucsd.edu/classes/sp13/cse223B-a/index.html "CSE223B SPRING 2013") (Distributed Computing and Systems) class at UC San Diego .
->This is a possible solution for [LAB3](http://cseweb.ucsd.edu/classes/sp13/cse223B-a/lab3.html "CSE223B LAB 3"
+>This is a possible solution for [LAB3](http://cseweb.ucsd.edu/classes/sp13/cse223B-a/lab3.html "CSE223B LAB 3")
 >
 
 Overview
