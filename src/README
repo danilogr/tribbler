@@ -11,14 +11,15 @@ Description:
 The map data structure used by my KeyValueStore_server implementation uses a
 Btree instead of Red Black tree. The Btree implementation uses less memory
 and for big data access it showed to be faster than Red Black tree (as it
-improves the using of cache)
+improves the using of cache).
+This doesn't makes solving Lab3 problem easier, it just make the storing more
+efficient. One could change the map used from btree::btree_map to std::map
+with no big problems.
 
 Files used:
 btree.h
 btree_container.h
 btree_map.h
-btree_set.h
-
 
 Files location:
 src\
@@ -65,3 +66,46 @@ The folder "include" is a copy of the include folder containing all Thrift
 generated headers and code files. This was required as I changed the RPC speci-
 fication between KVStore servers (and the type of the Posted attribute of
 Tribbler response type).
+
+IV) KV Server data structures and Functions
+================================================================================
+In an attempt to make this KV Server more generic, this KV Server will not deal
+with the contents of a key in order to update any kv server related information.
+But, considering that now the KV Server is a distributed server, it gives the
+user the possibility of synchronizing with other servers keeping a partial 
+ordering.
+This is done by the means of a function called Eval. At first, this function was
+supposed to receive a user script to be executed as an atomic operation in each
+KV Server.
+But as this KV Server implementation is just used for the tribbler server, I hard
+codded the function that the tribbler server would need to call as a script (
+this is explained with details bellow in the last section)
+
+Another modification one may find at the KV Server is that Lists have an order.
+That means that if you put values A, B  and C (in this order) you will get a list
+(with GetList) containing A,B and C in the same order.
+This reduces the processing required to sort a bunch of lists.
+
+Related projects and solutions:
+Redis is KV database that has a bunch of common data structures and has a 
+function for evaluating Lua script (besides other functionalities)
+Twitter Twemcache (a version of memcached) still just support the most general
+concept of key value store. But as part of Google Summer of Code 2013 they are
+looking to improve it including more data structures and a function like EVAL.
+https://github.com/twitter/twemcache/wiki/GSoC-Information
+
+V) Vector clock
+================================================================================
+Vector clocks are being used by the KV Store server to keep a partial order
+in "Eval" operations. This is done in a layer invisible to the Tribbler server.
+Therefore, If a A  server posts a message after seeing other messages from server
+B this information will be included in this message and therefore all other servers
+should should this first message from A after this messages from B.
+(This is the case of a RT, you only RT if you see a tribble, therefore, we keep
+ the casual order for these messages)
+
+
+
+VI) Scripting Language (Eval function)
+================================================================================
+Simple specification : check file eval.cpp
