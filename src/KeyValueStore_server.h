@@ -23,7 +23,11 @@ typedef btree::btree_map<std::string,ListHolder> ListMap;
 typedef std::pair<std::string, int> Server;
 typedef std::vector< Server > ServerList;
 
+
 class KeyValueStoreHandler : virtual public kvs::KeyValueStoreIf {
+
+
+
   public:
       KeyValueStoreHandler(int instanceId, const ServerList &servers );
 
@@ -57,6 +61,71 @@ class KeyValueStoreHandler : virtual public kvs::KeyValueStoreIf {
       std::vector<int64_t> _timestamp;   //local time stamp
       KeyMap single_keys;
       ListMap list_keys;
+
+      /* This class holds a operation with its timestamp*/
+      class BufferedOperation
+      {
+        public:
+          class Operation
+          {
+            public:
+              Operation(const std::string &a1, const std::string &a2,
+                        const std::string &a3): arg1(a1), arg2(a2),
+                        arg3(a3) {};
+              Operation() {};
+              std::string arg1,arg2,arg3;
+          };
+
+          class Timestamp
+          {
+            public:
+              Timestamp(const std::vector<int64_t> &v, int client) : vt(v), id(client) {};
+              Timestamp() {};
+
+              std::vector<int64_t> vt;
+              int id;
+          };
+
+          Operation op;
+          Timestamp ts;
+
+         BufferedOperation(const Timestamp &t, const Operation&o) : op(o), ts(t) {};
+         BufferedOperation();
+      };
+
+      /* This class holds a buffer of timestamp and deals with
+       * removing only the ones that are valid.
+       * For this adhoc implementation I use a O(n^2) algorithm
+       * I think that a linear algorithm is possile (using a
+       * priority queue)
+       * (Changing is really easy, it's just a matter of recoding
+       * getNextOperation())
+       * */
+      class TimestampBuffer
+      {
+        private:
+          //holds a vector timestamp plus the server that issued it
+          std::list<BufferedOperation> buffer;
+          std::vector<int64_t> &localts;
+
+        public:
+          TimestampBuffer(std::vector<int64_t> &t) : localts(t){};
+
+          //gives the next operation to the user or returns false
+          //when no more valid operations are available
+          //it updates local timestamp
+          std::pair<bool,BufferedOperation> getNextOperation()
+          {
+            if(buffer.size() == 0)
+              return std::make_pair(false,BufferedOperation());
+          }
+
+          void bufferize(const std::vector<int64_t> &ts, int id, const BufferedOperation::Operation &o)
+          {
+              buffer.push_back(BufferedOperation(BufferedOperation::Timestamp(ts,id),o));
+          }
+      };
+
 
       /* Remote functions used to update other servers */
       void RemoteEval(std::string arg1, std::string arg2, std::string arg3);

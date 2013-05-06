@@ -242,7 +242,7 @@ bool KeyValueStoreHandler::evaluate(const std::string &global, const std::string
   {
 
     //
-    //first, increment global counter "global"
+    //first, increment (local) global counter "global"
     //
     std::string global_counter =  single_keys[global];
     int counter = 0;
