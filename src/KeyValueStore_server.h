@@ -129,16 +129,19 @@ class KeyValueStoreHandler : virtual public kvs::KeyValueStoreIf {
             //look for a candidate
             while(it != buffer.end() && !found)
             {
+
                 BufferedOperation &bo = *it;
                 BufferedOperation::Timestamp &ts= bo.ts;
                 found = true;
-                for(int i=0; i < maxcompare; i++)
+
+
+                for(unsigned int i=0; i <  ts.vt.size(); i++)
                 {
                   //checking the guy that sent
                   if(i == ts.id)
                   {
                     //check condition
-                    if(localts[i] +1 != ts.vt[i])
+                    if(localts[i] != ts.vt[i] -1)
                     {
                       found = false;
                       break;
@@ -161,12 +164,15 @@ class KeyValueStoreHandler : virtual public kvs::KeyValueStoreIf {
             //if found
             if(found)
             {
-              //adjust local clock
+
               BufferedOperation bo = *it;
               BufferedOperation::Timestamp &ts = bo.ts;
+              //adjust local clock
+
+
 
               //increment local (copy local)
-              localts[ts.id] == ts.vt[ts.id];
+              localts[ts.id] = ts.vt[ts.id];
 
               //remove from buffer
               buffer.erase(it);

@@ -105,7 +105,16 @@ should should this first message from A after this messages from B.
  the casual order for these messages)
 
 
+VI) KV Server Failure
+================================================================================
+Each time a KV Server replicates the calls it received (by using the set of 
+one way functions) it will try to send it to each server in its list. Case a server
+is not reachable, and it never was, this KV Server will keep trying to reach it.
+But, a KV Server will ignore other server if this server was once accessible and
+then became unavailable.
 
-VI) Scripting Language (Eval function)
+I chose not to replicate keys when a server joins.
+
+VII) Scripting Language (Eval function)
 ================================================================================
 Simple specification : check file eval.cpp

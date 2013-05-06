@@ -26,7 +26,7 @@ KeyValueStoreHandler::KeyValueStoreHandler(int instanceId, const ServerList &ser
     //prepare timestamp
     _timestamp.resize(server.size()+1);
     std::fill(_timestamp.begin(),_timestamp.end(), 0);
-
+ 
     //fill vectors
     _backendDead.resize(server.size());
     _backendOnce.resize(server.size());
