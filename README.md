@@ -18,3 +18,7 @@ The whole system is composed of:
 * **Storage System**: Here implemented as a key-value storage service (much like a hash table). This were all information from Tribbler server is stored.
 
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/danilogr/tribbler/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
